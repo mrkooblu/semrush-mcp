@@ -18,6 +18,7 @@
     "test:coverage": "vitest run --coverage",
     "test:unit": "vitest run semrush-api.test.ts",
     "test:integration": "vitest run semrush-api.integration.test.ts mcp.integration.test.ts",
+    "test:spec": "vitest run api-spec.integration.test.ts",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
