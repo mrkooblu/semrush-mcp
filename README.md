@@ -377,20 +377,17 @@ This self-hosted tool is for users who need more control:
 - **CLI for agents** — AI coding agents can invoke `semrush` directly without MCP
 - **Open source** — MIT licensed, fork and customize to your needs
 
-## See Also
-
-Semrush offers an official hosted MCP connector with no setup required -- point your AI client to `https://mcp.semrush.com/v1/mcp` and authenticate with your Semrush account:
-
-- [What is Semrush MCP?](https://www.semrush.com/kb/1618-mcp)
-- [Getting Started with MCP](https://www.semrush.com/kb/1619-getting-started-with-mcp)
-
-This project is independent and not affiliated with or endorsed by Semrush.
-
 ## Security
 
 - Never share your Semrush API key publicly
 - API key provides access to your API units balance
 - Exposing credentials can lead to unauthorized API usage and unexpected charges
+
+## Hosted Alternative
+
+Semrush also offers an [official hosted MCP connector](https://www.semrush.com/kb/1618-mcp) at `https://mcp.semrush.com/v1/mcp` — no setup required, authenticate with your Semrush account. See [Getting Started with MCP](https://www.semrush.com/kb/1619-getting-started-with-mcp) for details.
+
+This project is independent and not affiliated with or endorsed by Semrush.
 
 ## License
 
