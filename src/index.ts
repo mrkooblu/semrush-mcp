@@ -6,14 +6,36 @@ import chalk from 'chalk'
 
 import { logConfigStatus, logger } from './config.js'
 import {
+  BacklinksTargetParamsSchema,
   BatchKeywordParamsSchema,
   CheckParamsSchema,
   DomainParamsSchema,
   KeywordDbRequiredParamsSchema,
   KeywordParamsSchema,
+  ProjectCreateParamsSchema,
+  ProjectIdParamsSchema,
+  ProjectUpdateParamsSchema,
+  RankDifferenceParamsSchema,
+  SiteAuditHistoryParamsSchema,
+  SiteAuditInfoParamsSchema,
+  SiteAuditLaunchParamsSchema,
+  SiteAuditPageDetailParamsSchema,
+  SiteAuditPagesParamsSchema,
+  SiteAuditSnapshotDetailParamsSchema,
+  SiteAuditSnapshotsParamsSchema,
+  SubdomainNoDatabaseParamsSchema,
+  SubdomainParamsSchema,
+  SubfolderNoDatabaseParamsSchema,
+  SubfolderParamsSchema,
   TargetParamsSchema,
   TrafficDomainParamsSchema,
   TrafficDomainsParamsSchema,
+  TrendsAccuracyParamsSchema,
+  TrendsAudienceInsightsParamsSchema,
+  TrendsPurchaseConversionParamsSchema,
+  TrendsTargetParamsSchema,
+  UrlNoDatabaseParamsSchema,
+  UrlParamsSchema,
 } from './schemas.js'
 import { SemrushApiError, semrushApi } from './semrush-api.js'
 
@@ -22,6 +44,19 @@ const READ_ONLY_ANNOTATIONS = {
   readOnlyHint: true as const,
   destructiveHint: false as const,
   idempotentHint: true as const,
+}
+
+// Write tool annotations — for create/update/delete operations
+const WRITE_ANNOTATIONS = {
+  readOnlyHint: false as const,
+  destructiveHint: false as const,
+  idempotentHint: false as const,
+}
+
+const DESTRUCTIVE_ANNOTATIONS = {
+  readOnlyHint: false as const,
+  destructiveHint: true as const,
+  idempotentHint: false as const,
 }
 
 // Helper to wrap API errors in MCP error response format
@@ -49,6 +84,11 @@ function handleApiError(error: unknown) {
   }
 }
 
+// Helper to build a success response
+function successResponse(data: unknown) {
+  return { content: [{ type: 'text' as const, text: JSON.stringify(data) }] }
+}
+
 // Create the MCP server
 const server = new McpServer({
   name: 'semrush-mcp',
@@ -56,7 +96,7 @@ const server = new McpServer({
 })
 
 // ---------------------------------------------------------------------------
-// Domain Tools
+// Domain Tools — Overview
 // ---------------------------------------------------------------------------
 
 server.tool(
@@ -67,13 +107,65 @@ server.tool(
   async ({ domain, database }) => {
     try {
       const response = await semrushApi.getDomainOverview(domain, database)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_domain_overview: ${(error as Error).message}`)
       return handleApiError(error)
     }
   }
 )
+
+server.tool(
+  'semrush_domain_rank',
+  'Get domain ranking in a specific database',
+  DomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ domain, database, limit }) => {
+    try {
+      const response = await semrushApi.getDomainRank(domain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_domain_rank: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_domain_rank_history',
+  'Get historical ranking data for a domain',
+  DomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ domain, database, limit }) => {
+    try {
+      const response = await semrushApi.getDomainRankHistory(domain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_domain_rank_history: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_rank_difference',
+  'Get winners and losers — domains with biggest ranking changes',
+  RankDifferenceParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ database, limit }) => {
+    try {
+      const response = await semrushApi.getRankDifference(database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_rank_difference: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
+// Domain Tools — Keyword Reports
+// ---------------------------------------------------------------------------
 
 server.tool(
   'semrush_domain_organic_keywords',
@@ -83,7 +175,7 @@ server.tool(
   async ({ domain, database, limit }) => {
     try {
       const response = await semrushApi.getDomainOrganicKeywords(domain, database, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_domain_organic_keywords: ${(error as Error).message}`)
       return handleApiError(error)
@@ -99,7 +191,7 @@ server.tool(
   async ({ domain, database, limit }) => {
     try {
       const response = await semrushApi.getDomainPaidKeywords(domain, database, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_domain_paid_keywords: ${(error as Error).message}`)
       return handleApiError(error)
@@ -115,9 +207,373 @@ server.tool(
   async ({ domain, database, limit }) => {
     try {
       const response = await semrushApi.getCompetitorsInOrganic(domain, database, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_competitors: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_paid_competitors',
+  'Get paid search competitors for a domain',
+  DomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ domain, database, limit }) => {
+    try {
+      const response = await semrushApi.getPaidCompetitors(domain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_paid_competitors: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_domain_ads_history',
+  'Get ads history for a domain over last 12 months',
+  DomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ domain, database, limit }) => {
+    try {
+      const response = await semrushApi.getDomainAdsHistory(domain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_domain_ads_history: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_domain_organic_unique',
+  'Get unique organic keywords grouped by URL for a domain',
+  DomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ domain, database, limit }) => {
+    try {
+      const response = await semrushApi.getDomainOrganicUnique(domain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_domain_organic_unique: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_domain_adwords_unique',
+  'Get unique paid ads for a domain',
+  DomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ domain, database, limit }) => {
+    try {
+      const response = await semrushApi.getDomainAdwordsUnique(domain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_domain_adwords_unique: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_domain_shopping',
+  'Get PLA (Product Listing Ads) search keywords for a domain',
+  DomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ domain, database, limit }) => {
+    try {
+      const response = await semrushApi.getDomainShopping(domain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_domain_shopping: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_domain_shopping_unique',
+  'Get unique shopping ads for a domain',
+  DomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ domain, database, limit }) => {
+    try {
+      const response = await semrushApi.getDomainShoppingUnique(domain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_domain_shopping_unique: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
+// URL Tools
+// ---------------------------------------------------------------------------
+
+server.tool(
+  'semrush_url_organic',
+  'Get organic keywords for a specific URL',
+  UrlParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ url, database, limit }) => {
+    try {
+      const response = await semrushApi.getUrlOrganic(url, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_url_organic: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_url_adwords',
+  'Get paid keywords for a specific URL',
+  UrlParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ url, database, limit }) => {
+    try {
+      const response = await semrushApi.getUrlAdwords(url, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_url_adwords: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_url_rank',
+  'Get ranking data for a specific URL',
+  UrlParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ url, database, limit }) => {
+    try {
+      const response = await semrushApi.getUrlRank(url, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_url_rank: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_url_rank_history',
+  'Get historical ranking data for a specific URL',
+  UrlParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ url, database, limit }) => {
+    try {
+      const response = await semrushApi.getUrlRankHistory(url, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_url_rank_history: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_url_ranks',
+  'Get ranking data for a URL across all databases',
+  UrlNoDatabaseParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ url, limit }) => {
+    try {
+      const response = await semrushApi.getUrlRanks(url, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_url_ranks: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
+// Subdomain Tools
+// ---------------------------------------------------------------------------
+
+server.tool(
+  'semrush_subdomain_rank',
+  'Get ranking data for a subdomain in a specific database',
+  SubdomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subdomain, database, limit }) => {
+    try {
+      const response = await semrushApi.getSubdomainRank(subdomain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subdomain_rank: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_subdomain_ranks',
+  'Get ranking data for a subdomain across all databases',
+  SubdomainNoDatabaseParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subdomain, limit }) => {
+    try {
+      const response = await semrushApi.getSubdomainRanks(subdomain, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subdomain_ranks: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_subdomain_rank_history',
+  'Get historical ranking data for a subdomain',
+  SubdomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subdomain, database, limit }) => {
+    try {
+      const response = await semrushApi.getSubdomainRankHistory(subdomain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subdomain_rank_history: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_subdomain_organic',
+  'Get organic keywords for a subdomain',
+  SubdomainParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subdomain, database, limit }) => {
+    try {
+      const response = await semrushApi.getSubdomainOrganic(subdomain, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subdomain_organic: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
+// Subfolder Tools
+// ---------------------------------------------------------------------------
+
+server.tool(
+  'semrush_subfolder_organic',
+  'Get organic keywords for a subfolder (e.g. domain.com/blog/)',
+  SubfolderParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subfolder, database, limit }) => {
+    try {
+      const response = await semrushApi.getSubfolderOrganic(subfolder, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subfolder_organic: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_subfolder_adwords',
+  'Get paid keywords for a subfolder',
+  SubfolderParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subfolder, database, limit }) => {
+    try {
+      const response = await semrushApi.getSubfolderAdwords(subfolder, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subfolder_adwords: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_subfolder_rank',
+  'Get ranking data for a subfolder in a specific database',
+  SubfolderParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subfolder, database, limit }) => {
+    try {
+      const response = await semrushApi.getSubfolderRank(subfolder, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subfolder_rank: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_subfolder_ranks',
+  'Get ranking data for a subfolder across all databases',
+  SubfolderNoDatabaseParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subfolder, limit }) => {
+    try {
+      const response = await semrushApi.getSubfolderRanks(subfolder, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subfolder_ranks: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_subfolder_rank_history',
+  'Get historical ranking data for a subfolder',
+  SubfolderParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subfolder, database, limit }) => {
+    try {
+      const response = await semrushApi.getSubfolderRankHistory(subfolder, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subfolder_rank_history: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_subfolder_organic_unique',
+  'Get unique organic keywords grouped by URL for a subfolder',
+  SubfolderParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subfolder, database, limit }) => {
+    try {
+      const response = await semrushApi.getSubfolderOrganicUnique(subfolder, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subfolder_organic_unique: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_subfolder_adwords_unique',
+  'Get unique paid ads for a subfolder',
+  SubfolderParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ subfolder, database, limit }) => {
+    try {
+      const response = await semrushApi.getSubfolderAdwordsUnique(subfolder, database, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_subfolder_adwords_unique: ${(error as Error).message}`)
       return handleApiError(error)
     }
   }
@@ -135,7 +591,7 @@ server.tool(
   async ({ target, limit }) => {
     try {
       const response = await semrushApi.getBacklinks(target, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_backlinks: ${(error as Error).message}`)
       return handleApiError(error)
@@ -151,9 +607,89 @@ server.tool(
   async ({ target, limit }) => {
     try {
       const response = await semrushApi.getBacklinksDomains(target, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_backlinks_domains: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_backlinks_overview',
+  'Get backlinks overview summary stats for a target',
+  BacklinksTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, target_type }) => {
+    try {
+      const response = await semrushApi.getBacklinksOverview(target, target_type)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_backlinks_overview: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_backlinks_pages',
+  'Get indexed pages with backlink data for a target',
+  BacklinksTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, target_type, limit }) => {
+    try {
+      const response = await semrushApi.getBacklinksPages(target, target_type, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_backlinks_pages: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_backlinks_anchors',
+  'Get anchor text distribution for a target',
+  BacklinksTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, target_type, limit }) => {
+    try {
+      const response = await semrushApi.getBacklinksAnchors(target, target_type, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_backlinks_anchors: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_backlinks_tld',
+  'Get referring domains by TLD for a target',
+  BacklinksTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, target_type, limit }) => {
+    try {
+      const response = await semrushApi.getBacklinksTld(target, target_type, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_backlinks_tld: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_backlinks_categories',
+  'Get domain categories for a target based on backlinks',
+  BacklinksTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, target_type, limit }) => {
+    try {
+      const response = await semrushApi.getBacklinksCategories(target, target_type, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_backlinks_categories: ${(error as Error).message}`)
       return handleApiError(error)
     }
   }
@@ -171,7 +707,7 @@ server.tool(
   async ({ keyword, database }) => {
     try {
       const response = await semrushApi.getKeywordOverview(keyword, database)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_keyword_overview: ${(error as Error).message}`)
       return handleApiError(error)
@@ -187,7 +723,7 @@ server.tool(
   async ({ keyword, database, limit }) => {
     try {
       const response = await semrushApi.getRelatedKeywords(keyword, database, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_related_keywords: ${(error as Error).message}`)
       return handleApiError(error)
@@ -207,7 +743,7 @@ server.tool(
   async ({ keyword, database }) => {
     try {
       const response = await semrushApi.getKeywordOverviewSingleDb(keyword, database)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_keyword_overview_single_db: ${(error as Error).message}`)
       return handleApiError(error)
@@ -223,7 +759,7 @@ server.tool(
   async ({ keywords, database }) => {
     try {
       const response = await semrushApi.getBatchKeywordOverview(keywords, database)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_batch_keyword_overview: ${(error as Error).message}`)
       return handleApiError(error)
@@ -239,7 +775,7 @@ server.tool(
   async ({ keyword, database, limit }) => {
     try {
       const response = await semrushApi.getKeywordOrganicResults(keyword, database, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_keyword_organic_results: ${(error as Error).message}`)
       return handleApiError(error)
@@ -255,7 +791,7 @@ server.tool(
   async ({ keyword, database, limit }) => {
     try {
       const response = await semrushApi.getKeywordPaidResults(keyword, database, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_keyword_paid_results: ${(error as Error).message}`)
       return handleApiError(error)
@@ -271,7 +807,7 @@ server.tool(
   async ({ keyword, database, limit }) => {
     try {
       const response = await semrushApi.getKeywordAdsHistory(keyword, database, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_keyword_ads_history: ${(error as Error).message}`)
       return handleApiError(error)
@@ -287,7 +823,7 @@ server.tool(
   async ({ keyword, database, limit }) => {
     try {
       const response = await semrushApi.getBroadMatchKeywords(keyword, database, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_broad_match_keywords: ${(error as Error).message}`)
       return handleApiError(error)
@@ -303,7 +839,7 @@ server.tool(
   async ({ keyword, database, limit }) => {
     try {
       const response = await semrushApi.getPhraseQuestions(keyword, database, limit)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_phrase_questions: ${(error as Error).message}`)
       return handleApiError(error)
@@ -319,7 +855,7 @@ server.tool(
   async ({ keywords, database }) => {
     try {
       const response = await semrushApi.getKeywordDifficulty(keywords, database)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_keyword_difficulty: ${(error as Error).message}`)
       return handleApiError(error)
@@ -328,7 +864,7 @@ server.tool(
 )
 
 // ---------------------------------------------------------------------------
-// Traffic Tools
+// Traffic Tools (Trends API)
 // ---------------------------------------------------------------------------
 
 server.tool(
@@ -339,7 +875,7 @@ server.tool(
   async ({ domains, country }) => {
     try {
       const response = await semrushApi.getTrafficSummary(domains, country)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_traffic_summary: ${(error as Error).message}`)
       return handleApiError(error)
@@ -355,9 +891,537 @@ server.tool(
   async ({ domain, country }) => {
     try {
       const response = await semrushApi.getTrafficSources(domain, country)
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_traffic_sources: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_traffic_destinations',
+  'Get outbound traffic destinations for a domain (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getTrafficDestinations(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_traffic_destinations: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_traffic_geo',
+  'Get geographic distribution of traffic for a domain (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getTrafficGeo(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_traffic_geo: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_traffic_subdomains',
+  'Get subdomain traffic distribution for a domain (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getTrafficSubdomains(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_traffic_subdomains: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_traffic_subfolders',
+  'Get subfolder traffic distribution for a domain (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getTrafficSubfolders(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_traffic_subfolders: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_traffic_top_pages',
+  'Get top pages by traffic for a domain (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getTrafficTopPages(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_traffic_top_pages: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_traffic_rank',
+  'Get traffic rank for a domain (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getTrafficRank(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_traffic_rank: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_traffic_social_media',
+  'Get social media traffic distribution for a domain (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getTrafficSocialMedia(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_traffic_social_media: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_audience_insights',
+  'Get audience overlap and similarity data between domains (requires .Trends)',
+  TrendsAudienceInsightsParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ targets, selected_targets, limit }) => {
+    try {
+      const response = await semrushApi.getAudienceInsights(targets, selected_targets, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_audience_insights: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_purchase_conversion',
+  'Get purchase conversion rate for a domain (requires .Trends, desktop only)',
+  TrendsPurchaseConversionParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getPurchaseConversion(target, country, display_date, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_purchase_conversion: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_household_distribution',
+  'Get household size distribution of audience (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getHouseholdDistribution(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_household_distribution: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_income_distribution',
+  'Get income distribution of audience (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getIncomeDistribution(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_income_distribution: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_education_distribution',
+  'Get education level distribution of audience (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getEducationDistribution(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_education_distribution: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_occupation_distribution',
+  'Get occupation distribution of audience (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getOccupationDistribution(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_occupation_distribution: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_audience_interests',
+  'Get audience interest categories for a domain (requires .Trends)',
+  TrendsTargetParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, country, device_type, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getAudienceInterests(
+        target,
+        country,
+        device_type,
+        display_date,
+        limit
+      )
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_audience_interests: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_traffic_accuracy',
+  'Get data accuracy score for traffic analytics (requires .Trends)',
+  TrendsAccuracyParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ target, display_date, limit }) => {
+    try {
+      const response = await semrushApi.getTrafficAccuracy(target, display_date, limit)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_traffic_accuracy: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
+// Projects API Tools
+// ---------------------------------------------------------------------------
+
+server.tool(
+  'semrush_list_projects',
+  'List all Semrush projects',
+  CheckParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async () => {
+    try {
+      const response = await semrushApi.listProjects()
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_list_projects: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_get_project',
+  'Get details of a specific Semrush project',
+  ProjectIdParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ project_id }) => {
+    try {
+      const response = await semrushApi.getProject(project_id)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_get_project: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_create_project',
+  'Create a new Semrush project',
+  ProjectCreateParamsSchema.shape,
+  WRITE_ANNOTATIONS,
+  async ({ url, project_name }) => {
+    try {
+      const response = await semrushApi.createProject(url, project_name)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_create_project: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_update_project',
+  'Update a Semrush project name',
+  ProjectUpdateParamsSchema.shape,
+  WRITE_ANNOTATIONS,
+  async ({ project_id, project_name }) => {
+    try {
+      const response = await semrushApi.updateProject(project_id, project_name)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_update_project: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_delete_project',
+  'Delete a Semrush project',
+  ProjectIdParamsSchema.shape,
+  DESTRUCTIVE_ANNOTATIONS,
+  async ({ project_id }) => {
+    try {
+      const response = await semrushApi.deleteProject(project_id)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_delete_project: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
+// Site Audit Tools
+// ---------------------------------------------------------------------------
+
+server.tool(
+  'semrush_site_audit_info',
+  'Get site audit information for a project',
+  SiteAuditInfoParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ project_id }) => {
+    try {
+      const response = await semrushApi.getSiteAuditInfo(project_id)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_site_audit_info: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_site_audit_snapshots',
+  'List site audit snapshots for a project',
+  SiteAuditSnapshotsParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ project_id }) => {
+    try {
+      const response = await semrushApi.getSiteAuditSnapshots(project_id)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_site_audit_snapshots: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_site_audit_snapshot_detail',
+  'Get detailed site audit snapshot data',
+  SiteAuditSnapshotDetailParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ project_id, snapshot_id }) => {
+    try {
+      const response = await semrushApi.getSiteAuditSnapshotDetail(project_id, snapshot_id)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_site_audit_snapshot_detail: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_site_audit_issues',
+  'Get issue metadata for site audit',
+  ProjectIdParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ project_id }) => {
+    try {
+      const response = await semrushApi.getSiteAuditIssues(project_id)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_site_audit_issues: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_site_audit_pages',
+  'List pages from a site audit',
+  SiteAuditPagesParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ project_id, url, limit, page }) => {
+    try {
+      const response = await semrushApi.getSiteAuditPages(project_id, url, limit, page)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_site_audit_pages: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_site_audit_page_detail',
+  'Get detailed audit data for a specific page',
+  SiteAuditPageDetailParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ project_id, page_id }) => {
+    try {
+      const response = await semrushApi.getSiteAuditPageDetail(project_id, page_id)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_site_audit_page_detail: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_site_audit_history',
+  'Get site audit crawl history',
+  SiteAuditHistoryParamsSchema.shape,
+  READ_ONLY_ANNOTATIONS,
+  async ({ project_id, limit, offset }) => {
+    try {
+      const response = await semrushApi.getSiteAuditHistory(project_id, limit, offset)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_site_audit_history: ${(error as Error).message}`)
+      return handleApiError(error)
+    }
+  }
+)
+
+server.tool(
+  'semrush_site_audit_launch',
+  'Launch a new site audit crawl for a project',
+  SiteAuditLaunchParamsSchema.shape,
+  WRITE_ANNOTATIONS,
+  async ({ project_id }) => {
+    try {
+      const response = await semrushApi.launchSiteAuditCrawl(project_id)
+      return successResponse(response.data)
+    } catch (error) {
+      logger.error(`Error in semrush_site_audit_launch: ${(error as Error).message}`)
       return handleApiError(error)
     }
   }
@@ -375,7 +1439,7 @@ server.tool(
   async () => {
     try {
       const response = await semrushApi.getApiUnitsBalance()
-      return { content: [{ type: 'text', text: JSON.stringify(response.data) }] }
+      return successResponse(response.data)
     } catch (error) {
       logger.error(`Error in semrush_api_units_balance: ${(error as Error).message}`)
       return handleApiError(error)

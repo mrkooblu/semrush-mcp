@@ -119,6 +119,326 @@ export const MOCK_TRAFFIC_SOURCES_JSON = JSON.stringify({
 export const MOCK_API_UNITS_BALANCE = '45230'
 
 // ============================================================================
+// Mock CSV Data — New Endpoints
+// ============================================================================
+
+/** Domain rank CSV (domain_rank) */
+export const MOCK_DOMAIN_RANK_CSV =
+  'Domain;Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost\r\n' +
+  'example.com;1500;45000;1200000;890000;1200;50000;120000'
+
+/** Domain rank history CSV (domain_rank_history) */
+export const MOCK_DOMAIN_RANK_HISTORY_CSV =
+  'Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost;Date\r\n' +
+  '1500;45000;1200000;890000;1200;50000;120000;20240101'
+
+/** Rank difference CSV (rank_difference) */
+export const MOCK_RANK_DIFFERENCE_CSV =
+  'Domain;Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost;Organic Keywords Difference;Organic Traffic Difference;Organic Cost Difference;Adwords Keywords Difference;Adwords Traffic Difference;Adwords Cost Difference\r\n' +
+  'rising.com;500;80000;2000000;1500000;2000;80000;200000;5000;150000;100000;200;10000;25000'
+
+/** Paid competitors CSV (domain_adwords_adwords) */
+export const MOCK_PAID_COMPETITORS_CSV =
+  'Domain;Competitor Relevance;Common Keywords;Adwords Keywords;Adwords Traffic;Adwords Cost;Organic Keywords\r\n' +
+  'competitor1.com;0.25;3000;5000;80000;200000;35000'
+
+/** Domain ads history CSV (domain_adwords_historical) */
+export const MOCK_DOMAIN_ADS_HISTORY_CSV =
+  'Keyword;Date;Position;CPC;Search Volume;Traffic (%);Url;Title;Description;Visible Url;Coverage\r\n' +
+  'buy seo tools;202401;1;3.50;8000;12.5;https://example.com/buy;Buy SEO Tools;Best tools;example.com;0.85'
+
+/** Domain organic unique CSV (domain_organic_unique) */
+export const MOCK_DOMAIN_ORGANIC_UNIQUE_CSV =
+  'Url;Number of Keywords;Traffic;Traffic (%)\r\n' + 'https://example.com/page1;150;25000;8.5'
+
+/** Domain adwords unique CSV (domain_adwords_unique) */
+export const MOCK_DOMAIN_ADWORDS_UNIQUE_CSV =
+  'Title;Description;Visible Url;Url;Number of Keywords;Ad id\r\n' +
+  'Best SEO Tools;Top rated;example.com;https://example.com/lp;25;12345'
+
+/** Domain shopping CSV (domain_shopping) */
+export const MOCK_DOMAIN_SHOPPING_CSV =
+  'Keyword;Position;Previous Position;Position Difference;Search Volume;Shop Name;Url;Title;Product Price;Timestamp\r\n' +
+  'seo tool;1;2;1;5000;ExampleShop;https://example.com/product;SEO Tool Pro;49.99;20240101'
+
+/** Domain shopping unique CSV (domain_shopping_unique) */
+export const MOCK_DOMAIN_SHOPPING_UNIQUE_CSV =
+  'Title;Product Price;Url;Number of Keywords;Ad id\r\n' +
+  'SEO Tool Pro;49.99;https://example.com/product;15;67890'
+
+/** URL organic CSV */
+export const MOCK_URL_ORGANIC_CSV =
+  'Keyword;Position;Search Volume;CPC;Competition;Traffic (%);Traffic Cost (%);Number of Results;Trends;SERP Features;Timestamp\r\n' +
+  'what is seo;5;33000;2.80;0.62;4.5;12600;1800000000;1,0.9,0.8,1,1,0.9;Featured;20240301'
+
+/** URL adwords CSV */
+export const MOCK_URL_ADWORDS_CSV =
+  'Keyword;Position;Search Volume;CPC;Competition;Traffic (%);Traffic Cost (%);Number of Results;Trends;Title;Description\r\n' +
+  'seo tools;1;22000;3.80;0.75;15.2;57000;1200000000;0.9,1,0.8;Best SEO;Top rated tools'
+
+/** URL rank CSV */
+export const MOCK_URL_RANK_CSV =
+  'Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost\r\n' +
+  '250;500;15000;12000;50;2000;5000'
+
+/** URL rank history CSV */
+export const MOCK_URL_RANK_HISTORY_CSV =
+  'Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost;Date\r\n' +
+  '250;500;15000;12000;50;2000;5000;20240101'
+
+/** URL ranks CSV (all databases) */
+export const MOCK_URL_RANKS_CSV =
+  'Database;Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost;PLA uniques;PLA keywords\r\n' +
+  'us;250;500;15000;12000;50;2000;5000;10;25'
+
+/** Subdomain rank CSV */
+export const MOCK_SUBDOMAIN_RANK_CSV =
+  'Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost\r\n' +
+  '300;8000;250000;180000;200;15000;35000'
+
+/** Subdomain ranks CSV (all databases) */
+export const MOCK_SUBDOMAIN_RANKS_CSV =
+  'Database;Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost;PLA uniques;PLA keywords\r\n' +
+  'us;300;8000;250000;180000;200;15000;35000;20;40'
+
+/** Subdomain rank history CSV */
+export const MOCK_SUBDOMAIN_RANK_HISTORY_CSV =
+  'Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost;Date\r\n' +
+  '300;8000;250000;180000;200;15000;35000;20240101'
+
+/** Subdomain organic CSV */
+export const MOCK_SUBDOMAIN_ORGANIC_CSV =
+  'Keyword;Position;Previous Position;Position Difference;Search Volume;CPC;Url;Traffic (%);Traffic Cost (%);Competition;Number of Results;Trends\r\n' +
+  'subdomain keyword;4;6;2;9000;1.80;https://sub.example.com/page;5.2;9360;0.55;1100000;0.9,1,0.8,0.9,1,1'
+
+/** Subfolder organic CSV */
+export const MOCK_SUBFOLDER_ORGANIC_CSV =
+  'Keyword;Position;Previous Position;Position Difference;Search Volume;CPC;Url;Traffic (%);Traffic Cost (%);Competition;Number of Results;Trends\r\n' +
+  'subfolder keyword;3;5;2;11000;2.10;https://example.com/blog/post;7.5;23100;0.60;950000;0.8,0.9,1,0.7,0.8,1'
+
+/** Subfolder adwords CSV */
+export const MOCK_SUBFOLDER_ADWORDS_CSV =
+  'Keyword;Position;Previous Position;Position Difference;Search Volume;CPC;Visible Url;Traffic (%);Traffic Cost (%);Competition;Number of Results;Trends\r\n' +
+  'subfolder paid;2;3;1;7000;3.40;example.com/blog;10.5;23800;0.72;600000;1,0.9,0.8,0.9,1,1'
+
+/** Subfolder rank CSV */
+export const MOCK_SUBFOLDER_RANK_CSV =
+  'Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost\r\n' +
+  '450;3000;80000;60000;100;8000;20000'
+
+/** Subfolder ranks CSV (all databases) */
+export const MOCK_SUBFOLDER_RANKS_CSV =
+  'Database;Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost;PLA uniques;PLA keywords\r\n' +
+  'us;450;3000;80000;60000;100;8000;20000;5;12'
+
+/** Subfolder rank history CSV */
+export const MOCK_SUBFOLDER_RANK_HISTORY_CSV =
+  'Rank;Organic Keywords;Organic Traffic;Organic Cost;Adwords Keywords;Adwords Traffic;Adwords Cost;Date\r\n' +
+  '450;3000;80000;60000;100;8000;20000;20240101'
+
+/** Subfolder organic unique CSV */
+export const MOCK_SUBFOLDER_ORGANIC_UNIQUE_CSV =
+  'Url;Number of Keywords;Traffic;Traffic (%)\r\n' + 'https://example.com/blog/post1;75;12000;4.2'
+
+/** Subfolder adwords unique CSV */
+export const MOCK_SUBFOLDER_ADWORDS_UNIQUE_CSV =
+  'Title;Description;Visible Url;Url;Number of Keywords;Ad id\r\n' +
+  'Blog Ad;Read more;example.com/blog;https://example.com/blog/lp;10;54321'
+
+/** Backlinks overview CSV */
+export const MOCK_BACKLINKS_OVERVIEW_CSV =
+  'total;domains_num;ips_num;follows_num;nofollows_num;score;trust_score;urls_num;ipclassc_num;texts_num;forms_num;frames_num;images_num\r\n' +
+  '150000;5000;3500;120000;30000;72;65;8000;2500;100000;500;200;25000'
+
+/** Backlinks pages CSV */
+export const MOCK_BACKLINKS_PAGES_CSV =
+  'source_url;source_title;response_code;backlinks_num;domains_num;external_num;internal_num;last_seen\r\n' +
+  'https://example.com/page1;Example Page;200;50;25;30;20;20240315'
+
+/** Backlinks anchors CSV */
+export const MOCK_BACKLINKS_ANCHORS_CSV =
+  'anchor;domains_num;backlinks_num;first_seen;last_seen\r\n' +
+  'click here;150;500;20230101;20240315'
+
+/** Backlinks TLD CSV */
+export const MOCK_BACKLINKS_TLD_CSV =
+  'zone;domains_num;backlinks_num\r\n' + 'com;3500;85000\r\n' + 'org;800;12000'
+
+/** Backlinks categories CSV */
+export const MOCK_BACKLINKS_CATEGORIES_CSV =
+  'category_name;rating\r\n' + 'Internet and Telecom;0.85\r\n' + 'Business and Industry;0.65'
+
+/** Trends destinations CSV */
+export const MOCK_TRENDS_DESTINATIONS_CSV =
+  'target;display_date;country;device_type;to_target;traffic_share;traffic\r\n' +
+  'google.com;2024-01-01;us;desktop;youtube.com;0.15;1500000'
+
+/** Trends geo CSV */
+export const MOCK_TRENDS_GEO_CSV =
+  'target;display_date;device_type;geo;traffic;global_traffic;traffic_share\r\n' +
+  'google.com;2024-01-01;desktop;US;45000000;89000000;0.51'
+
+/** Trends subdomains CSV */
+export const MOCK_TRENDS_SUBDOMAINS_CSV =
+  'domain;display_date;country;device_type;subdomain;traffic_share\r\n' +
+  'google.com;2024-01-01;us;desktop;mail.google.com;0.25'
+
+/** Trends subfolders CSV */
+export const MOCK_TRENDS_SUBFOLDERS_CSV =
+  'display_date;subfolder;subdomain;traffic_share;users\r\n' +
+  '2024-01-01;/search;www.google.com;0.65;30000000'
+
+/** Trends toppages CSV */
+export const MOCK_TRENDS_TOPPAGES_CSV =
+  'device_type;display_date;country;target;page;traffic_share\r\n' +
+  'desktop;2024-01-01;us;google.com;google.com/;0.35'
+
+/** Trends rank CSV */
+export const MOCK_TRENDS_RANK_CSV =
+  'display_date;country;device_type;rank;domain;visits\r\n' +
+  '2024-01-01;us;desktop;1;google.com;89000000000'
+
+/** Trends social media CSV */
+export const MOCK_TRENDS_SOCIAL_MEDIA_CSV =
+  'target;display_date;country;device_type;social_name;social_domain;users_score;users\r\n' +
+  'google.com;2024-01-01;us;desktop;YouTube;youtube.com;0.85;50000000'
+
+/** Trends audience insights CSV */
+export const MOCK_TRENDS_AUDIENCE_INSIGHTS_CSV =
+  'target;overlap_score;similarity_score;target_users;overlap_users\r\n' +
+  'youtube.com;0.75;0.82;500000000;375000000'
+
+/** Trends purchase conversion CSV */
+export const MOCK_TRENDS_PURCHASE_CONVERSION_CSV =
+  'target;display_date;device_type;country;conversion\r\n' + 'amazon.com;2024-01-01;desktop;us;0.12'
+
+/** Trends household distribution CSV */
+export const MOCK_TRENDS_HOUSEHOLD_CSV =
+  'target;display_date;country;device_type;size;users_share;users\r\n' +
+  'google.com;2024-01-01;us;desktop;2;0.35;15000000'
+
+/** Trends income distribution CSV */
+export const MOCK_TRENDS_INCOME_CSV =
+  'target;display_date;country;device_type;income_type;users_share;users\r\n' +
+  'google.com;2024-01-01;us;desktop;middle;0.55;25000000'
+
+/** Trends education distribution CSV */
+export const MOCK_TRENDS_EDUCATION_CSV =
+  'target;display_date;country;device_type;education;users_share;users\r\n' +
+  'google.com;2024-01-01;us;desktop;university;0.45;20000000'
+
+/** Trends occupation distribution CSV */
+export const MOCK_TRENDS_OCCUPATION_CSV =
+  'target;display_date;country;device_type;occupation;users_share;users\r\n' +
+  'google.com;2024-01-01;us;desktop;full_time_work;0.60;27000000'
+
+/** Trends audience interests CSV */
+export const MOCK_TRENDS_AUDIENCE_INTERESTS_CSV =
+  'target;display_date;country;device_type;category;users;users_score\r\n' +
+  'google.com;2024-01-01;us;desktop;Technology;35000000;0.78'
+
+/** Trends accuracy CSV */
+export const MOCK_TRENDS_ACCURACY_CSV =
+  'display_date;device_type;country;target;accuracy\r\n' + '2024-01-01;desktop;us;google.com;high'
+
+/** Projects API - list projects JSON */
+export const MOCK_PROJECTS_LIST_JSON = JSON.stringify([
+  {
+    project_id: 12345,
+    project_name: 'Test Project',
+    url: 'https://example.com',
+    domain_unicode: 'example.com',
+    tools: [{ tool: 'siteaudit' }],
+    owner_id: 1,
+    permission: ['admin'],
+  },
+])
+
+/** Projects API - single project JSON */
+export const MOCK_PROJECT_JSON = JSON.stringify({
+  project_id: 12345,
+  project_name: 'Test Project',
+  url: 'https://example.com',
+  domain_unicode: 'example.com',
+  tools: [{ tool: 'siteaudit' }],
+  owner_id: 1,
+  permission: ['admin'],
+})
+
+/** Site Audit info JSON */
+export const MOCK_SITE_AUDIT_INFO_JSON = JSON.stringify({
+  id: 12345,
+  name: 'Test Project',
+  url: 'https://example.com',
+  status: 'finished',
+  errors: 10,
+  warnings: 25,
+  notices: 50,
+})
+
+/** Site Audit snapshots JSON */
+export const MOCK_SITE_AUDIT_SNAPSHOTS_JSON = JSON.stringify({
+  snapshots: [
+    { snapshot_id: 100, finish_date: 1710000000000 },
+    { snapshot_id: 99, finish_date: 1709000000000 },
+  ],
+})
+
+/** Site Audit snapshot detail JSON */
+export const MOCK_SITE_AUDIT_SNAPSHOT_DETAIL_JSON = JSON.stringify({
+  pages_crawled: 500,
+  pages_limit: 1000,
+  errors: [{ id: 'broken_links', count: 5 }],
+  warnings: [{ id: 'missing_meta', count: 10 }],
+  quality: { value: 85, delta: 2 },
+})
+
+/** Site Audit issues JSON */
+export const MOCK_SITE_AUDIT_ISSUES_JSON = JSON.stringify({
+  issues: [
+    { id: 'broken_links', title: 'Broken Links' },
+    { id: 'missing_meta', title: 'Missing Meta Description' },
+  ],
+})
+
+/** Site Audit pages JSON */
+export const MOCK_SITE_AUDIT_PAGES_JSON = JSON.stringify({
+  data: [
+    { url: 'https://example.com/', page_id: 1 },
+    { url: 'https://example.com/about', page_id: 2 },
+  ],
+  total: 2,
+})
+
+/** Site Audit page detail JSON */
+export const MOCK_SITE_AUDIT_PAGE_DETAIL_JSON = JSON.stringify({
+  title: 'Home Page',
+  url: 'https://example.com/',
+  errors: [],
+  warnings: [{ total: 1, id: 'missing_h1' }],
+  notices: [],
+})
+
+/** Site Audit history JSON */
+export const MOCK_SITE_AUDIT_HISTORY_JSON = JSON.stringify({
+  offset: 0,
+  limit: 10,
+  data: [
+    {
+      snapshot_id: 100,
+      pages_crawled: 500,
+      quality: { value: 85, delta: 2 },
+    },
+  ],
+  total: 1,
+})
+
+/** Site Audit launch JSON */
+export const MOCK_SITE_AUDIT_LAUNCH_JSON = JSON.stringify({
+  status: 'crawl_started',
+})
+
+// ============================================================================
 // Mock Response Builders
 // ============================================================================
 

@@ -1,0 +1,1772 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Semrush API",
+    "version": "1.0.0",
+    "description": "Verified Semrush API specification covering SEO Analytics, Trends, Projects, and Site Audit endpoints. All response schemas verified via live API calls on 2026-03-17.",
+    "contact": {
+      "name": "Semrush",
+      "url": "https://www.semrush.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.semrush.com",
+      "description": "SEO Analytics API (domain, keyword, overview reports)"
+    },
+    {
+      "url": "https://api.semrush.com/analytics/v1",
+      "description": "Backlinks API"
+    },
+    {
+      "url": "https://api.semrush.com/analytics/ta/api/v3",
+      "description": "Trends (Traffic Analytics) API"
+    },
+    {
+      "url": "https://api.semrush.com/management/v1",
+      "description": "Projects Management API"
+    },
+    {
+      "url": "https://api.semrush.com/reports/v1",
+      "description": "Site Audit Reports API"
+    }
+  ],
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "key",
+        "description": "Semrush API key passed as query parameter 'key'"
+      }
+    }
+  },
+  "x-verified-date": "2026-03-17",
+  "x-endpoints": [
+    {
+      "operationId": "domain_ranks",
+      "description": "Domain overview across all databases",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-overview",
+      "parameters": {
+        "type": "domain_ranks",
+        "domain": "required",
+        "database": "optional (default: all)",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Database", "Domain", "Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost", "PLA keywords", "PLA uniques"],
+      "columnCodes": ["Db", "Dn", "Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac", "Sh", "Sv"],
+      "testParams": {
+        "type": "domain_ranks",
+        "domain": "semrush.com",
+        "export_columns": "Db,Dn,Rk,Or,Ot,Oc,Ad,At,Ac,Sh,Sv",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_rank",
+      "description": "Domain overview for a single database",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-overview",
+      "parameters": {
+        "type": "domain_rank",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "display_sort": "optional",
+        "display_filter": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Domain", "Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost"],
+      "columnCodes": ["Dn", "Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac"],
+      "testParams": {
+        "type": "domain_rank",
+        "domain": "semrush.com",
+        "database": "us",
+        "export_columns": "Dn,Rk,Or,Ot,Oc,Ad,At,Ac",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_rank_history",
+      "description": "Historical domain rankings over time",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-overview",
+      "parameters": {
+        "type": "domain_rank_history",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "display_sort": "optional",
+        "display_filter": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost", "Date"],
+      "columnCodes": ["Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac", "Dt"],
+      "testParams": {
+        "type": "domain_rank_history",
+        "domain": "semrush.com",
+        "database": "us",
+        "export_columns": "Rk,Or,Ot,Oc,Ad,At,Ac,Dt",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "rank_difference",
+      "description": "Top domains by ranking change (no domain param needed)",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-overview",
+      "parameters": {
+        "type": "rank_difference",
+        "database": "required",
+        "display_limit": "optional",
+        "display_sort": "optional",
+        "display_filter": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Domain", "Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost", "Organic Keywords Difference", "Organic Traffic Difference", "Organic Cost Difference", "Adwords Keywords Difference", "Adwords Traffic Difference", "Adwords Cost Difference"],
+      "columnCodes": ["Dn", "Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac", "Om", "Tm", "Um", "Am", "Bm", "Cm"],
+      "testParams": {
+        "type": "rank_difference",
+        "database": "us",
+        "export_columns": "Dn,Rk,Or,Ot,Oc,Ad,At,Ac,Om,Tm,Um,Am,Bm,Cm",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_organic",
+      "description": "Organic search keywords for a domain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-domain",
+      "parameters": {
+        "type": "domain_organic",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "export_columns": "optional",
+        "display_sort": "optional",
+        "display_filter": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Position", "Previous Position", "Position Difference", "Search Volume", "CPC", "Url", "Traffic (%)", "Traffic Cost (%)", "Competition", "Number of Results", "Trends"],
+      "columnCodes": ["Ph", "Po", "Pp", "Pd", "Nq", "Cp", "Ur", "Tr", "Tc", "Co", "Nr", "Td"],
+      "testParams": {
+        "type": "domain_organic",
+        "domain": "semrush.com",
+        "database": "us",
+        "export_columns": "Ph,Po,Pp,Pd,Nq,Cp,Ur,Tr,Tc,Co,Nr,Td",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_adwords",
+      "description": "Paid search keywords for a domain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-domain",
+      "parameters": {
+        "type": "domain_adwords",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "export_columns": "optional",
+        "display_sort": "optional",
+        "display_filter": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Position", "Previous Position", "Position Difference", "Adwords Block", "Search Volume", "CPC", "Traffic (%)", "Traffic Cost (%)", "Competition", "Number of Results", "Trends"],
+      "columnCodes": ["Ph", "Po", "Pp", "Pd", "Ab", "Nq", "Cp", "Tr", "Tc", "Co", "Nr", "Td"],
+      "testParams": {
+        "type": "domain_adwords",
+        "domain": "semrush.com",
+        "database": "us",
+        "export_columns": "Ph,Po,Pp,Pd,Ab,Nq,Cp,Tr,Tc,Co,Nr,Td",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_organic_organic",
+      "description": "Organic competitors for a domain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-domain",
+      "parameters": {
+        "type": "domain_organic_organic",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Domain", "Competitor Relevance", "Common Keywords", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords"],
+      "columnCodes": ["Dn", "Cr", "Np", "Or", "Ot", "Oc", "Ad"],
+      "testParams": {
+        "type": "domain_organic_organic",
+        "domain": "semrush.com",
+        "database": "us",
+        "export_columns": "Dn,Cr,Np,Or,Ot,Oc,Ad",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_adwords_adwords",
+      "description": "Paid competitors for a domain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-domain",
+      "parameters": {
+        "type": "domain_adwords_adwords",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Domain", "Competitor Relevance", "Common Keywords", "Adwords Keywords", "Adwords Traffic", "Adwords Cost", "Organic Keywords"],
+      "columnCodes": ["Dn", "Cr", "Np", "Ad", "At", "Ac", "Or"],
+      "testParams": {
+        "type": "domain_adwords_adwords",
+        "domain": "semrush.com",
+        "database": "us",
+        "export_columns": "Dn,Cr,Np,Ad,At,Ac,Or",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_adwords_historical",
+      "description": "Ads history for a domain (last 12 months)",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-domain",
+      "parameters": {
+        "type": "domain_adwords_historical",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Date", "Position", "CPC", "Search Volume", "Traffic (%)", "Url", "Title", "Description", "Visible Url", "Coverage"],
+      "columnCodes": ["Ph", "Dt", "Po", "Cp", "Nq", "Tr", "Ur", "Tt", "Ds", "Vu", "Cv"],
+      "testParams": {
+        "type": "domain_adwords_historical",
+        "domain": "semrush.com",
+        "database": "us",
+        "export_columns": "Ph,Dt,Po,Cp,Nq,Tr,Ur,Tt,Ds,Vu,Cv",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_organic_unique",
+      "description": "Unique organic pages for a domain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-domain",
+      "parameters": {
+        "type": "domain_organic_unique",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Url", "Number of Keywords", "Traffic", "Traffic (%)"],
+      "columnCodes": ["Ur", "Pc", "Tr", "Tg"],
+      "testParams": {
+        "type": "domain_organic_unique",
+        "domain": "semrush.com",
+        "database": "us",
+        "export_columns": "Ur,Pc,Tg,Tr",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_adwords_unique",
+      "description": "Unique paid ads for a domain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-domain",
+      "parameters": {
+        "type": "domain_adwords_unique",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Title", "Description", "Visible Url", "Url", "Number of Keywords"],
+      "columnCodes": ["Tt", "Ds", "Vu", "Ur", "Pc"],
+      "testParams": {
+        "type": "domain_adwords_unique",
+        "domain": "semrush.com",
+        "database": "us",
+        "export_columns": "Tt,Ds,Vu,Ur,Pc",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_shopping",
+      "description": "PLA (Product Listing Ads) search keywords for a domain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-domain",
+      "parameters": {
+        "type": "domain_shopping",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Position", "Previous Position", "Position Difference", "Search Volume", "Shop Name", "Url", "Title", "Timestamp"],
+      "columnCodes": ["Ph", "Po", "Pp", "Pd", "Nq", "Sn", "Ur", "Tt", "Ts"],
+      "testParams": {
+        "type": "domain_shopping",
+        "domain": "amazon.com",
+        "database": "us",
+        "export_columns": "Ph,Po,Pp,Pd,Nq,Sn,Ur,Tt,Ts",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "domain_shopping_unique",
+      "description": "Unique shopping ads for a domain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-domain",
+      "parameters": {
+        "type": "domain_shopping_unique",
+        "domain": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Title", "Url", "Number of Keywords"],
+      "columnCodes": ["Tt", "Ur", "Pc"],
+      "testParams": {
+        "type": "domain_shopping_unique",
+        "domain": "amazon.com",
+        "database": "us",
+        "export_columns": "Tt,Ur,Pc",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "url_organic",
+      "description": "Organic keywords for a specific URL",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-url",
+      "parameters": {
+        "type": "url_organic",
+        "url": "required (full URL, URL-encoded)",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Position", "Search Volume", "CPC", "Competition", "Traffic (%)", "Traffic Cost (%)", "Number of Results", "Trends", "SERP Features by Keyword", "Timestamp"],
+      "columnCodes": ["Ph", "Po", "Nq", "Cp", "Co", "Tr", "Tc", "Nr", "Td", "Fk", "Ts"],
+      "testParams": {
+        "type": "url_organic",
+        "url": "https://www.semrush.com/blog/",
+        "database": "us",
+        "export_columns": "Ph,Po,Nq,Cp,Co,Tr,Tc,Nr,Td,Fk,Ts",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "url_adwords",
+      "description": "Paid keywords for a specific URL",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-url",
+      "parameters": {
+        "type": "url_adwords",
+        "url": "required (full URL, URL-encoded)",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Position", "Search Volume", "CPC", "Competition", "Traffic (%)", "Traffic Cost (%)", "Number of Results", "Trends", "Title", "Description"],
+      "columnCodes": ["Ph", "Po", "Nq", "Cp", "Co", "Tr", "Tc", "Nr", "Td", "Tt", "Ds"],
+      "testParams": {
+        "type": "url_adwords",
+        "url": "https://www.semrush.com/",
+        "database": "us",
+        "export_columns": "Ph,Po,Nq,Cp,Co,Tr,Tc,Nr,Td,Tt,Ds",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "url_rank",
+      "description": "Ranking overview for a specific URL in one database",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-url",
+      "parameters": {
+        "type": "url_rank",
+        "url": "required (full URL, URL-encoded)",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost"],
+      "columnCodes": ["Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac"],
+      "testParams": {
+        "type": "url_rank",
+        "url": "https://www.semrush.com/",
+        "database": "us",
+        "export_columns": "Rk,Or,Ot,Oc,Ad,At,Ac",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "url_rank_history",
+      "description": "Historical ranking data for a specific URL",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-url",
+      "parameters": {
+        "type": "url_rank_history",
+        "url": "required (full URL, URL-encoded)",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost", "Date"],
+      "columnCodes": ["Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac", "Dt"],
+      "testParams": {
+        "type": "url_rank_history",
+        "url": "https://www.semrush.com/",
+        "database": "us",
+        "export_columns": "Rk,Or,Ot,Oc,Ad,At,Ac,Dt",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "url_ranks",
+      "description": "Ranking overview for a URL across all databases",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-url",
+      "parameters": {
+        "type": "url_ranks",
+        "url": "required (full URL, URL-encoded)",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Database", "Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost"],
+      "columnCodes": ["Db", "Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac"],
+      "testParams": {
+        "type": "url_ranks",
+        "url": "https://www.semrush.com/",
+        "export_columns": "Db,Rk,Or,Ot,Oc,Ad,At,Ac",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subdomain_rank",
+      "description": "Ranking overview for a subdomain in one database",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subdomain",
+      "parameters": {
+        "type": "subdomain_rank",
+        "subdomain": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost"],
+      "columnCodes": ["Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac"],
+      "testParams": {
+        "type": "subdomain_rank",
+        "subdomain": "www.semrush.com",
+        "database": "us",
+        "export_columns": "Rk,Or,Ot,Oc,Ad,At,Ac",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subdomain_ranks",
+      "description": "Ranking overview for a subdomain across all databases",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subdomain",
+      "parameters": {
+        "type": "subdomain_ranks",
+        "subdomain": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Database", "Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost"],
+      "columnCodes": ["Db", "Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac"],
+      "testParams": {
+        "type": "subdomain_ranks",
+        "subdomain": "www.semrush.com",
+        "export_columns": "Db,Rk,Or,Ot,Oc,Ad,At,Ac",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subdomain_rank_history",
+      "description": "Historical ranking data for a subdomain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subdomain",
+      "parameters": {
+        "type": "subdomain_rank_history",
+        "subdomain": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost", "Date"],
+      "columnCodes": ["Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac", "Dt"],
+      "testParams": {
+        "type": "subdomain_rank_history",
+        "subdomain": "www.semrush.com",
+        "database": "us",
+        "export_columns": "Rk,Or,Ot,Oc,Ad,At,Ac,Dt",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subdomain_organic",
+      "description": "Organic keywords for a subdomain",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subdomain",
+      "parameters": {
+        "type": "subdomain_organic",
+        "subdomain": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Position", "Previous Position", "Position Difference", "Search Volume", "CPC", "Url", "Traffic (%)", "Traffic Cost (%)", "Competition", "Number of Results", "Trends"],
+      "columnCodes": ["Ph", "Po", "Pp", "Pd", "Nq", "Cp", "Ur", "Tr", "Tc", "Co", "Nr", "Td"],
+      "testParams": {
+        "type": "subdomain_organic",
+        "subdomain": "www.semrush.com",
+        "database": "us",
+        "export_columns": "Ph,Po,Pp,Pd,Nq,Cp,Ur,Tr,Tc,Co,Nr,Td",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subfolder_organic",
+      "description": "Organic keywords for a subfolder",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subfolder",
+      "parameters": {
+        "type": "subfolder_organic",
+        "subfolder": "required (format: domain.com/path/)",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Position", "Previous Position", "Position Difference", "Search Volume", "CPC", "Url", "Traffic (%)", "Traffic Cost (%)", "Competition", "Number of Results", "Trends"],
+      "columnCodes": ["Ph", "Po", "Pp", "Pd", "Nq", "Cp", "Ur", "Tr", "Tc", "Co", "Nr", "Td"],
+      "testParams": {
+        "type": "subfolder_organic",
+        "subfolder": "semrush.com/blog/",
+        "database": "us",
+        "export_columns": "Ph,Po,Pp,Pd,Nq,Cp,Ur,Tr,Tc,Co,Nr,Td",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subfolder_adwords",
+      "description": "Paid keywords for a subfolder",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subfolder",
+      "parameters": {
+        "type": "subfolder_adwords",
+        "subfolder": "required (format: domain.com/path/)",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Position", "Previous Position", "Position Difference", "Search Volume", "CPC", "Visible Url", "Traffic (%)", "Traffic Cost (%)", "Competition", "Number of Results", "Trends"],
+      "columnCodes": ["Ph", "Po", "Pp", "Pd", "Nq", "Cp", "Vu", "Tr", "Tc", "Co", "Nr", "Td"],
+      "testParams": {
+        "type": "subfolder_adwords",
+        "subfolder": "semrush.com/blog/",
+        "database": "us",
+        "export_columns": "Ph,Po,Pp,Pd,Nq,Cp,Vu,Tr,Tc,Co,Nr,Td",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subfolder_rank",
+      "description": "Ranking overview for a subfolder in one database",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subfolder",
+      "parameters": {
+        "type": "subfolder_rank",
+        "subfolder": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost"],
+      "columnCodes": ["Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac"],
+      "testParams": {
+        "type": "subfolder_rank",
+        "subfolder": "semrush.com/blog/",
+        "database": "us",
+        "export_columns": "Rk,Or,Ot,Oc,Ad,At,Ac",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subfolder_ranks",
+      "description": "Ranking overview for a subfolder across all databases",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subfolder",
+      "parameters": {
+        "type": "subfolder_ranks",
+        "subfolder": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Database", "Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost"],
+      "columnCodes": ["Db", "Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac"],
+      "testParams": {
+        "type": "subfolder_ranks",
+        "subfolder": "semrush.com/blog/",
+        "export_columns": "Db,Rk,Or,Ot,Oc,Ad,At,Ac",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subfolder_rank_history",
+      "description": "Historical ranking data for a subfolder",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subfolder",
+      "parameters": {
+        "type": "subfolder_rank_history",
+        "subfolder": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Rank", "Organic Keywords", "Organic Traffic", "Organic Cost", "Adwords Keywords", "Adwords Traffic", "Adwords Cost", "Date"],
+      "columnCodes": ["Rk", "Or", "Ot", "Oc", "Ad", "At", "Ac", "Dt"],
+      "testParams": {
+        "type": "subfolder_rank_history",
+        "subfolder": "semrush.com/blog/",
+        "database": "us",
+        "export_columns": "Rk,Or,Ot,Oc,Ad,At,Ac,Dt",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subfolder_organic_unique",
+      "description": "Unique organic pages for a subfolder",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subfolder",
+      "parameters": {
+        "type": "subfolder_organic_unique",
+        "subfolder": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Url", "Number of Keywords", "Traffic", "Traffic (%)"],
+      "columnCodes": ["Ur", "Pc", "Tr", "Tg"],
+      "testParams": {
+        "type": "subfolder_organic_unique",
+        "subfolder": "semrush.com/blog/",
+        "database": "us",
+        "export_columns": "Ur,Pc,Tg,Tr",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "subfolder_adwords_unique",
+      "description": "Unique paid ads for a subfolder",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-subfolder",
+      "parameters": {
+        "type": "subfolder_adwords_unique",
+        "subfolder": "required",
+        "database": "required",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Title", "Description", "Visible Url", "Url", "Number of Keywords"],
+      "columnCodes": ["Tt", "Ds", "Vu", "Ur", "Pc"],
+      "testParams": {
+        "type": "subfolder_adwords_unique",
+        "subfolder": "semrush.com/blog/",
+        "database": "us",
+        "export_columns": "Tt,Ds,Vu,Ur,Pc",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_all",
+      "description": "Keyword overview across all databases",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_all",
+        "phrase": "required",
+        "database": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Search Volume", "CPC", "Competition", "Number of Results"],
+      "columnCodes": ["Ph", "Nq", "Cp", "Co", "Nr"],
+      "testParams": {
+        "type": "phrase_all",
+        "phrase": "seo",
+        "database": "us",
+        "export_columns": "Ph,Nq,Cp,Co,Nr",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_this",
+      "description": "Keyword overview for a single database",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_this",
+        "phrase": "required",
+        "database": "required",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Search Volume", "CPC", "Competition", "Number of Results", "Trends", "Intent", "Keyword Difficulty Index"],
+      "columnCodes": ["Ph", "Nq", "Cp", "Co", "Nr", "Td", "In", "Kd"],
+      "testParams": {
+        "type": "phrase_this",
+        "phrase": "seo",
+        "database": "us",
+        "export_columns": "Ph,Nq,Cp,Co,Nr,Td,In,Kd",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_these",
+      "description": "Batch keyword overview (up to 100 keywords)",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_these",
+        "phrase": "required (semicolon-separated keywords)",
+        "database": "required",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Search Volume", "CPC", "Competition", "Number of Results", "Trends", "Intent", "Keyword Difficulty Index"],
+      "columnCodes": ["Ph", "Nq", "Cp", "Co", "Nr", "Td", "In", "Kd"],
+      "testParams": {
+        "type": "phrase_these",
+        "phrase": "seo;marketing",
+        "database": "us",
+        "export_columns": "Ph,Nq,Cp,Co,Nr,Td,In,Kd",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_organic",
+      "description": "Domains ranking in Google top 100 for a keyword",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_organic",
+        "phrase": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Position", "Position Type", "Domain", "Url", "Keywords SERP Features", "SERP Features", "SERP Features"],
+      "columnCodes": ["Po", "Pt", "Dn", "Ur", "Fk", "Fp", "Fl"],
+      "testParams": {
+        "type": "phrase_organic",
+        "phrase": "seo",
+        "database": "us",
+        "export_columns": "Po,Pt,Dn,Ur,Fk,Fp,Fl",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_adwords",
+      "description": "Domains in Google paid search for a keyword",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_adwords",
+        "phrase": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Domain", "Url", "Visible Url"],
+      "columnCodes": ["Dn", "Ur", "Vu"],
+      "testParams": {
+        "type": "phrase_adwords",
+        "phrase": "seo",
+        "database": "us",
+        "export_columns": "Dn,Ur,Vu",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_adwords_historical",
+      "description": "Historical ad data for a keyword (last 12 months)",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_adwords_historical",
+        "phrase": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Domain", "Date", "Position", "Url", "Title", "Description", "Visible Url"],
+      "columnCodes": ["Dn", "Dt", "Po", "Ur", "Tt", "Ds", "Vu"],
+      "testParams": {
+        "type": "phrase_adwords_historical",
+        "phrase": "seo",
+        "database": "us",
+        "export_columns": "Dn,Dt,Po,Ur,Tt,Ds,Vu",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_fullsearch",
+      "description": "Broad match keywords related to a term",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_fullsearch",
+        "phrase": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Search Volume", "CPC", "Competition", "Number of Results", "Trends", "Keywords SERP Features", "Intent", "Keyword Difficulty Index"],
+      "columnCodes": ["Ph", "Nq", "Cp", "Co", "Nr", "Td", "Fk", "In", "Kd"],
+      "testParams": {
+        "type": "phrase_fullsearch",
+        "phrase": "seo",
+        "database": "us",
+        "export_columns": "Ph,Nq,Cp,Co,Nr,Td,Fk,In,Kd",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_questions",
+      "description": "Question-based keywords related to a term",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_questions",
+        "phrase": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Search Volume", "CPC", "Competition", "Number of Results", "Trends", "Intent", "Keyword Difficulty Index"],
+      "columnCodes": ["Ph", "Nq", "Cp", "Co", "Nr", "Td", "In", "Kd"],
+      "testParams": {
+        "type": "phrase_questions",
+        "phrase": "seo",
+        "database": "us",
+        "export_columns": "Ph,Nq,Cp,Co,Nr,Td,In,Kd",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_related",
+      "description": "Related keywords for a term",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_related",
+        "phrase": "required",
+        "database": "required",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Search Volume", "CPC", "Competition", "Number of Results", "Trends"],
+      "columnCodes": ["Ph", "Nq", "Cp", "Co", "Nr", "Td"],
+      "testParams": {
+        "type": "phrase_related",
+        "phrase": "seo",
+        "database": "us",
+        "export_columns": "Ph,Nq,Cp,Co,Nr,Td",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "phrase_kdi",
+      "description": "Keyword difficulty score for keywords",
+      "baseUrl": "https://api.semrush.com/",
+      "category": "seo-keyword",
+      "parameters": {
+        "type": "phrase_kdi",
+        "phrase": "required (semicolon-separated keywords)",
+        "database": "required",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["Keyword", "Keyword Difficulty Index"],
+      "columnCodes": ["Ph", "Kd"],
+      "testParams": {
+        "type": "phrase_kdi",
+        "phrase": "seo;marketing",
+        "database": "us",
+        "export_columns": "Ph,Kd",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "backlinks",
+      "description": "Backlinks for a target domain/URL",
+      "baseUrl": "https://api.semrush.com/analytics/v1/",
+      "category": "seo-backlinks",
+      "parameters": {
+        "type": "backlinks",
+        "target": "required",
+        "target_type": "required (root_domain|domain|url)",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["page_ascore", "source_title", "source_url", "target_url", "anchor", "external_num", "internal_num", "first_seen", "last_seen"],
+      "columnCodes": ["page_ascore", "source_title", "source_url", "target_url", "anchor", "external_num", "internal_num", "first_seen", "last_seen"],
+      "testParams": {
+        "type": "backlinks",
+        "target": "semrush.com",
+        "target_type": "root_domain",
+        "export_columns": "page_ascore,source_title,source_url,target_url,anchor,external_num,internal_num,first_seen,last_seen",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "backlinks_refdomains",
+      "description": "Referring domains for a target",
+      "baseUrl": "https://api.semrush.com/analytics/v1/",
+      "category": "seo-backlinks",
+      "parameters": {
+        "type": "backlinks_refdomains",
+        "target": "required",
+        "target_type": "required (root_domain|domain|url)",
+        "display_limit": "optional",
+        "export_columns": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["domain_ascore", "domain", "backlinks_num", "ip", "country", "first_seen", "last_seen"],
+      "columnCodes": ["domain_ascore", "domain", "backlinks_num", "ip", "country", "first_seen", "last_seen"],
+      "testParams": {
+        "type": "backlinks_refdomains",
+        "target": "semrush.com",
+        "target_type": "root_domain",
+        "export_columns": "domain_ascore,domain,backlinks_num,ip,country,first_seen,last_seen",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "backlinks_overview",
+      "description": "Backlinks overview statistics for a target",
+      "baseUrl": "https://api.semrush.com/analytics/v1/",
+      "category": "seo-backlinks",
+      "parameters": {
+        "type": "backlinks_overview",
+        "target": "required",
+        "target_type": "required (root_domain|domain|url)"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["total", "domains_num", "ips_num", "follows_num", "nofollows_num", "score", "trust_score", "urls_num", "ipclassc_num", "texts_num", "forms_num", "frames_num", "images_num"],
+      "columnCodes": ["total", "domains_num", "ips_num", "follows_num", "nofollows_num", "score", "trust_score", "urls_num", "ipclassc_num", "texts_num", "forms_num", "frames_num", "images_num"],
+      "testParams": {
+        "type": "backlinks_overview",
+        "target": "semrush.com",
+        "target_type": "root_domain",
+        "export_columns": "total,domains_num,ips_num,follows_num,nofollows_num,score,trust_score,urls_num,ipclassc_num,texts_num,forms_num,frames_num,images_num"
+      },
+      "verified": true
+    },
+    {
+      "operationId": "backlinks_pages",
+      "description": "Pages with most backlinks for a target",
+      "baseUrl": "https://api.semrush.com/analytics/v1/",
+      "category": "seo-backlinks",
+      "parameters": {
+        "type": "backlinks_pages",
+        "target": "required",
+        "target_type": "required (root_domain|domain|url)",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["source_url", "source_title", "response_code", "backlinks_num", "domains_num", "external_num", "internal_num", "last_seen"],
+      "columnCodes": ["source_url", "source_title", "response_code", "backlinks_num", "domains_num", "external_num", "internal_num", "last_seen"],
+      "testParams": {
+        "type": "backlinks_pages",
+        "target": "semrush.com",
+        "target_type": "root_domain",
+        "export_columns": "source_url,source_title,response_code,backlinks_num,domains_num,external_num,internal_num,last_seen",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "backlinks_anchors",
+      "description": "Anchor text distribution for a target",
+      "baseUrl": "https://api.semrush.com/analytics/v1/",
+      "category": "seo-backlinks",
+      "parameters": {
+        "type": "backlinks_anchors",
+        "target": "required",
+        "target_type": "required (root_domain|domain|url)",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["anchor", "domains_num", "backlinks_num", "first_seen", "last_seen"],
+      "columnCodes": ["anchor", "domains_num", "backlinks_num", "first_seen", "last_seen"],
+      "testParams": {
+        "type": "backlinks_anchors",
+        "target": "semrush.com",
+        "target_type": "root_domain",
+        "export_columns": "anchor,domains_num,backlinks_num,first_seen,last_seen",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "backlinks_tld",
+      "description": "Top-level domain distribution of backlinks",
+      "baseUrl": "https://api.semrush.com/analytics/v1/",
+      "category": "seo-backlinks",
+      "parameters": {
+        "type": "backlinks_tld",
+        "target": "required",
+        "target_type": "required (root_domain|domain|url)",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["zone", "domains_num", "backlinks_num"],
+      "columnCodes": ["zone", "domains_num", "backlinks_num"],
+      "testParams": {
+        "type": "backlinks_tld",
+        "target": "semrush.com",
+        "target_type": "root_domain",
+        "export_columns": "zone,domains_num,backlinks_num",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "backlinks_categories",
+      "description": "Categories of backlink sources",
+      "baseUrl": "https://api.semrush.com/analytics/v1/",
+      "category": "seo-backlinks",
+      "parameters": {
+        "type": "backlinks_categories",
+        "target": "required",
+        "target_type": "required (root_domain|domain|url)",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["category_name", "rating"],
+      "columnCodes": ["category_name", "rating"],
+      "testParams": {
+        "type": "backlinks_categories",
+        "target": "semrush.com",
+        "target_type": "root_domain",
+        "export_columns": "category_name,rating",
+        "display_limit": 1
+      },
+      "verified": true
+    },
+    {
+      "operationId": "trends_summary",
+      "description": "Traffic summary for one or more domains",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "targets": "required (comma-separated domains)",
+        "display_limit": "optional",
+        "display_date": "optional (YYYY-MM-DD)",
+        "export_columns": "optional",
+        "country": "optional",
+        "device_type": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["display_date", "country", "device_type", "target", "rank", "visits", "desktop_visits", "mobile_visits", "users", "desktop_users", "mobile_users"],
+      "columnCodes": ["display_date", "country", "device_type", "target", "rank", "visits", "desktop_visits", "mobile_visits", "users", "desktop_users", "mobile_users"],
+      "validExportColumns": ["display_date", "country", "device_type", "target", "rank", "visits", "desktop_visits", "mobile_visits", "users", "desktop_users", "mobile_users", "desktop_hits", "mobile_hits", "direct", "search_organic", "search_paid", "social_organic", "social_paid", "referral", "mail", "display_ad", "ai_assistants", "ai_search", "unknown_channel", "search", "social", "paid", "time_on_site", "desktop_time_on_site", "mobile_time_on_site", "pages_per_visit", "desktop_pages_per_visit", "mobile_pages_per_visit", "bounce_rate", "desktop_bounce_rate", "mobile_bounce_rate", "desktop_share", "mobile_share", "accuracy", "categories"],
+      "testParams": {
+        "targets": "semrush.com",
+        "export_columns": "display_date,country,device_type,target,rank,visits,desktop_visits,mobile_visits,users,desktop_users,mobile_users",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_sources",
+      "description": "Traffic sources for a domain",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "display_limit": "optional",
+        "export_columns": "optional",
+        "country": "optional",
+        "device_type": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "from_target", "traffic_share", "traffic"],
+      "columnCodes": ["target", "from_target", "traffic_share", "traffic"],
+      "testParams": {
+        "target": "semrush.com",
+        "export_columns": "target,from_target,traffic_share,traffic",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_destinations",
+      "description": "Traffic destinations from a domain",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "display_limit": "optional",
+        "export_columns": "optional",
+        "country": "optional",
+        "device_type": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "display_date", "country", "device_type", "to_target", "traffic_share", "traffic"],
+      "columnCodes": ["target", "display_date", "country", "device_type", "to_target", "traffic_share", "traffic"],
+      "validExportColumns": ["target", "display_date", "country", "device_type", "to_target", "traffic_share", "traffic", "prev_traffic", "categories"],
+      "testParams": {
+        "target": "semrush.com",
+        "export_columns": "target,display_date,country,device_type,to_target,traffic_share,traffic",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_geo",
+      "description": "Geographic distribution of traffic",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "display_limit": "optional",
+        "export_columns": "optional",
+        "device_type": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "display_date", "device_type", "geo", "traffic", "global_traffic", "traffic_share", "users", "avg_visit_duration", "bounce_rate", "pages_per_visit", "desktop_share", "mobile_share"],
+      "columnCodes": ["target", "display_date", "device_type", "geo", "traffic", "global_traffic", "traffic_share", "users", "avg_visit_duration", "bounce_rate", "pages_per_visit", "desktop_share", "mobile_share"],
+      "testParams": {
+        "target": "semrush.com",
+        "export_columns": "target,display_date,device_type,geo,traffic,global_traffic,traffic_share,users,avg_visit_duration,bounce_rate,pages_per_visit,desktop_share,mobile_share",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_subdomains",
+      "description": "Subdomain traffic distribution",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "display_limit": "optional",
+        "export_columns": "optional",
+        "country": "optional",
+        "device_type": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["domain", "display_date", "country", "device_type", "subdomain", "traffic_share", "desktop_share", "mobile_share"],
+      "columnCodes": ["domain", "display_date", "country", "device_type", "subdomain", "traffic_share", "desktop_share", "mobile_share"],
+      "validExportColumns": ["domain", "display_date", "country", "device_type", "subdomain", "traffic_share", "desktop_share", "mobile_share", "total_hits", "desktop_hits", "mobile_hits", "total_visits", "desktop_visits", "mobile_visits", "total_users", "desktop_users", "mobile_users"],
+      "testParams": {
+        "target": "semrush.com",
+        "export_columns": "domain,display_date,country,device_type,subdomain,traffic_share,desktop_share,mobile_share",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_subfolders",
+      "description": "Subfolder traffic distribution",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "display_limit": "optional",
+        "export_columns": "optional",
+        "country": "optional",
+        "device_type": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["display_date", "subfolder", "subdomain", "traffic_share", "users", "unique_pageviews"],
+      "columnCodes": ["display_date", "subfolder", "subdomain", "traffic_share", "users", "unique_pageviews"],
+      "validExportColumns": ["display_date", "subfolder", "subdomain", "traffic_share", "users", "unique_pageviews", "entrances", "exits", "time_on_subfolder", "pages_per_visit", "bounce_rate", "direct", "search_organic", "search_paid", "social_organic", "social_paid", "referral", "mail", "display_ad", "ai_assistants", "ai_search", "search", "social", "paid"],
+      "testParams": {
+        "target": "semrush.com",
+        "export_columns": "display_date,subfolder,subdomain,traffic_share,users,unique_pageviews",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_toppages",
+      "description": "Top pages by traffic for a domain",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "display_limit": "optional",
+        "export_columns": "optional",
+        "country": "optional",
+        "device_type": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["device_type", "display_date", "country", "target", "page", "desktop_share", "mobile_share", "users_by_target", "traffic", "entrance_traffic", "traffic_share"],
+      "columnCodes": ["device_type", "display_date", "country", "target", "page", "desktop_share", "mobile_share", "users_by_target", "traffic", "entrance_traffic", "traffic_share"],
+      "testParams": {
+        "target": "semrush.com",
+        "export_columns": "device_type,display_date,country,target,page,desktop_share,mobile_share,users_by_target,traffic,entrance_traffic,traffic_share",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_rank",
+      "description": "Traffic rank for a domain",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "display_limit": "optional",
+        "export_columns": "optional",
+        "country": "optional",
+        "device_type": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["display_date", "country", "device_type", "rank", "domain"],
+      "columnCodes": ["display_date", "country", "device_type", "rank", "domain"],
+      "validExportColumns": ["display_date", "country", "device_type", "rank", "domain", "visits", "users", "desktop_share", "mobile_share", "desktop_visits", "mobile_visits", "time_on_site", "bounce_rate", "pages_per_visit"],
+      "testParams": {
+        "target": "semrush.com",
+        "export_columns": "display_date,country,device_type,rank,domain",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_social_media",
+      "description": "Social media traffic distribution",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "display_limit": "optional",
+        "country": "optional",
+        "device_type": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "display_date", "country", "device_type", "social_name", "social_domain", "users_score", "users"],
+      "columnCodes": ["target", "display_date", "country", "device_type", "social_name", "social_domain", "users_score", "users"],
+      "testParams": {
+        "target": "semrush.com",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_audience_insights",
+      "description": "Audience overlap and similarity between domains",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "targets": "required (comma-separated)",
+        "selected_targets": "required (comma-separated)",
+        "display_limit": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "overlap_score", "similarity_score", "target_users", "overlap_users", "categories", "is_adult"],
+      "columnCodes": ["target", "overlap_score", "similarity_score", "target_users", "overlap_users", "categories", "is_adult"],
+      "testParams": {
+        "targets": "semrush.com,ahrefs.com,moz.com",
+        "selected_targets": "semrush.com",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_purchase_conversion",
+      "description": "Purchase conversion data (desktop only)",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "device_type": "required (must be 'desktop')",
+        "display_limit": "optional",
+        "country": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "display_date", "device_type", "country", "conversion"],
+      "columnCodes": ["target", "display_date", "device_type", "country", "conversion"],
+      "testParams": {
+        "target": "amazon.com",
+        "device_type": "desktop",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_household_distribution",
+      "description": "Household size distribution of visitors",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "device_type": "required (mobile or desktop)",
+        "display_limit": "optional",
+        "country": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "display_date", "country", "device_type", "size", "users_share", "users"],
+      "columnCodes": ["target", "display_date", "country", "device_type", "size", "users_share", "users"],
+      "testParams": {
+        "target": "semrush.com",
+        "device_type": "desktop",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_income_distribution",
+      "description": "Income distribution of visitors",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "device_type": "required (mobile or desktop)",
+        "display_limit": "optional",
+        "country": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "display_date", "country", "device_type", "income_type", "users_share", "users"],
+      "columnCodes": ["target", "display_date", "country", "device_type", "income_type", "users_share", "users"],
+      "testParams": {
+        "target": "semrush.com",
+        "device_type": "desktop",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_education_distribution",
+      "description": "Education level distribution of visitors",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "device_type": "required (mobile or desktop)",
+        "display_limit": "optional",
+        "country": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "display_date", "country", "device_type", "education", "users_share", "users"],
+      "columnCodes": ["target", "display_date", "country", "device_type", "education", "users_share", "users"],
+      "testParams": {
+        "target": "semrush.com",
+        "device_type": "desktop",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_occupation_distribution",
+      "description": "Occupation distribution of visitors",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "device_type": "required (mobile or desktop)",
+        "display_limit": "optional",
+        "country": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "display_date", "country", "device_type", "occupation", "users_share", "users"],
+      "columnCodes": ["target", "display_date", "country", "device_type", "occupation", "users_share", "users"],
+      "testParams": {
+        "target": "semrush.com",
+        "device_type": "desktop",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_audience_interests",
+      "description": "Audience interest categories",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "device_type": "required (mobile or desktop)",
+        "display_limit": "optional",
+        "country": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["target", "display_date", "country", "device_type", "category", "users", "users_score"],
+      "columnCodes": ["target", "display_date", "country", "device_type", "category", "users", "users_score"],
+      "testParams": {
+        "target": "semrush.com",
+        "device_type": "desktop",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "trends_accuracy",
+      "description": "Data accuracy indicator for a domain",
+      "baseUrl": "https://api.semrush.com/analytics/ta/api/v3/",
+      "category": "trends",
+      "parameters": {
+        "target": "required (single domain)",
+        "display_limit": "optional",
+        "display_date": "optional"
+      },
+      "responseFormat": "csv",
+      "responseColumns": ["display_date", "device_type", "country", "target", "accuracy"],
+      "columnCodes": ["display_date", "device_type", "country", "target", "accuracy"],
+      "testParams": {
+        "target": "semrush.com",
+        "display_limit": 1
+      },
+      "requiresTrends": true,
+      "verified": true
+    },
+    {
+      "operationId": "projects_list",
+      "description": "List all projects",
+      "baseUrl": "https://api.semrush.com/management/v1/",
+      "category": "projects",
+      "parameters": {},
+      "responseFormat": "json",
+      "responseSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "project_id": { "type": "number" },
+            "project_name": { "type": "string" },
+            "url": { "type": "string" },
+            "domain_unicode": { "type": "string" },
+            "tools": { "type": "array" },
+            "owner_id": { "type": "number" },
+            "permission": { "type": "array" }
+          }
+        }
+      },
+      "testParams": {},
+      "testPath": "projects",
+      "verified": true
+    },
+    {
+      "operationId": "projects_get",
+      "description": "Get a specific project by ID",
+      "baseUrl": "https://api.semrush.com/management/v1/",
+      "category": "projects",
+      "parameters": {
+        "id": "required (path parameter)"
+      },
+      "responseFormat": "json",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "project_id": { "type": "number" },
+          "project_name": { "type": "string" },
+          "url": { "type": "string" },
+          "domain_unicode": { "type": "string" },
+          "tools": { "type": "array" },
+          "owner_id": { "type": "number" },
+          "permission": { "type": "array" }
+        }
+      },
+      "testParams": {
+        "id": 23138949
+      },
+      "testPath": "projects/23138949",
+      "verified": true
+    },
+    {
+      "operationId": "siteaudit_info",
+      "description": "Get site audit information for a project",
+      "baseUrl": "https://api.semrush.com/reports/v1/",
+      "category": "site-audit",
+      "parameters": {
+        "id": "required (path parameter)"
+      },
+      "responseFormat": "json",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "ampTotal": { "type": "number" },
+          "authEnabled": { "type": "boolean" },
+          "blocked": { "type": "number" },
+          "blockedDelta": { "type": "number" },
+          "broken": { "type": "number" },
+          "brokenDelta": { "type": "number" },
+          "campaignsCount": { "type": "number" },
+          "canonical": { "type": "object" },
+          "canonicalization": { "type": "object" },
+          "crawlDelaySettingTypeId": { "type": "number" },
+          "crawlSourceType": { "type": "string" },
+          "crawlSourceUrl": { "type": "string" },
+          "crawlSubdomains": { "type": "boolean" },
+          "crawlability": { "type": "object" },
+          "current_snapshot": { "type": "number" },
+          "data_will_be_removed": { "type": "string" },
+          "defects": { "type": "object" },
+          "depths": { "type": "object" },
+          "errors": { "type": "number" },
+          "errors_delta": { "type": "number" },
+          "excludedBetaChecks": { "type": "array" },
+          "excluded_checks": { "type": "array" },
+          "gaSettings": { "type": "object" },
+          "gaStatus": { "type": "string" },
+          "haveIssues": { "type": "number" },
+          "haveIssuesDelta": { "type": "number" },
+          "healthy": { "type": "number" },
+          "healthyDelta": { "type": "number" },
+          "hreflangs": { "type": "object" },
+          "id": { "type": "number" },
+          "ignoreRobotsDisallow": { "type": "boolean" },
+          "internalIncomingLinksGroups": { "type": "object" },
+          "internalIncomingLinksGroupsList": { "type": "array" },
+          "isPaid": { "type": "boolean" },
+          "is_allowed_stopping": { "type": "boolean" },
+          "is_notify": { "type": "boolean" },
+          "jsImpactReportDataAvailable": { "type": "boolean" },
+          "jsRendering": { "type": "boolean" },
+          "last_audit": { "type": "string" },
+          "last_failed_audit": { "type": "string" },
+          "markups": { "type": "object" },
+          "mask_allow": { "type": "string" },
+          "mask_disallow": { "type": "string" },
+          "name": { "type": "string" },
+          "next_audit": { "type": "string" },
+          "notices": { "type": "number" },
+          "notices_delta": { "type": "number" },
+          "pages_crawled": { "type": "number" },
+          "pages_crawled_delta": { "type": "number" },
+          "pages_limit": { "type": "number" },
+          "platform": { "type": "string" },
+          "precrawlError": { "type": "string" },
+          "productGroup": { "type": "string" },
+          "projectDomain": { "type": "string" },
+          "projectsCount": { "type": "number" },
+          "redirected": { "type": "number" },
+          "redirectedDelta": { "type": "number" },
+          "removedParameters": { "type": "array" },
+          "respectCrawlDelay": { "type": "boolean" },
+          "robots": { "type": "string" },
+          "running_pages_crawled": { "type": "number" },
+          "running_pages_limit": { "type": "number" },
+          "scheduleDay": { "type": "number" },
+          "scheme": { "type": "string" },
+          "sitemaps": { "type": "array" },
+          "status": { "type": "string" },
+          "structuredData": { "type": "object" },
+          "total_checks": { "type": "number" },
+          "uploadUrlsCount": { "type": "number" },
+          "url": { "type": "string" },
+          "user_agent_type": { "type": "string" },
+          "warnings": { "type": "number" },
+          "warnings_delta": { "type": "number" },
+          "webBotAuthEnabled": { "type": "boolean" },
+          "webBotAuthSignatureAgent": { "type": "string" },
+          "webBotAuthSignatureInput": { "type": "string" },
+          "withAmp": { "type": "boolean" },
+          "xdefault": { "type": "object" }
+        }
+      },
+      "testParams": {
+        "id": 23138949
+      },
+      "testPath": "projects/23138949/siteaudit/info",
+      "verified": true
+    },
+    {
+      "operationId": "siteaudit_snapshots",
+      "description": "List site audit snapshots for a project",
+      "baseUrl": "https://api.semrush.com/reports/v1/",
+      "category": "site-audit",
+      "parameters": {
+        "id": "required (path parameter)"
+      },
+      "responseFormat": "json",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "snapshots": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "snapshot_id": { "type": "number" },
+                "finish_date": { "type": "number" }
+              }
+            }
+          }
+        }
+      },
+      "testParams": {
+        "id": 23138949
+      },
+      "testPath": "projects/23138949/siteaudit/snapshots",
+      "verified": true
+    },
+    {
+      "operationId": "siteaudit_issues_meta",
+      "description": "Get issue metadata for site audit",
+      "baseUrl": "https://api.semrush.com/reports/v1/",
+      "category": "site-audit",
+      "parameters": {
+        "id": "required (path parameter)"
+      },
+      "responseFormat": "json",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "issues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "number" },
+                "title": { "type": "string" },
+                "title_page": { "type": "string" },
+                "url_column": { "type": "string" },
+                "info_column": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "testParams": {
+        "id": 23138949
+      },
+      "testPath": "projects/23138949/siteaudit/meta/issues",
+      "verified": true
+    },
+    {
+      "operationId": "siteaudit_history",
+      "description": "Get site audit history for a project",
+      "baseUrl": "https://api.semrush.com/reports/v1/",
+      "category": "site-audit",
+      "parameters": {
+        "id": "required (path parameter)",
+        "limit": "optional",
+        "offset": "optional"
+      },
+      "responseFormat": "json",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "offset": { "type": "number" },
+          "limit": { "type": "number" },
+          "data": { "type": "array" },
+          "total": { "type": "number" }
+        }
+      },
+      "testParams": {
+        "id": 23138949,
+        "limit": 1
+      },
+      "testPath": "projects/23138949/siteaudit/history",
+      "verified": true
+    },
+    {
+      "operationId": "api_units",
+      "description": "Check API units balance",
+      "baseUrl": "https://www.semrush.com/users/",
+      "category": "utility",
+      "parameters": {},
+      "responseFormat": "text",
+      "responseColumns": [],
+      "columnCodes": [],
+      "testParams": {},
+      "testPath": "countapiunits.html",
+      "verified": true
+    }
+  ]
+}
