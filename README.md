@@ -387,7 +387,7 @@ This self-hosted tool is for users who need more control:
 
 Semrush also offers an [official hosted MCP connector](https://www.semrush.com/kb/1618-mcp) at `https://mcp.semrush.com/v1/mcp` — no setup required, authenticate with your Semrush account. See [Getting Started with MCP](https://www.semrush.com/kb/1619-getting-started-with-mcp) for details.
 
-This project is independent and not affiliated with or endorsed by Semrush.
+This is a personal project and not an official Semrush product.
 
 ## License
 
