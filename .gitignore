@@ -29,3 +29,6 @@ yarn-error.log*
 # OS related
 .DS_Store
 Thumbs.db 
+# Internal working docs
+CONTEXT.md
+PLAN.md
