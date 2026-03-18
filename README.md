@@ -7,7 +7,7 @@ A community-maintained, self-hosted tool that provides Semrush API data through 
 ## Quick Start
 
 ```bash
-npm install -g github:mzkrasner/semrush-mcp
+npm install -g github:mrkooblu/semrush-mcp
 export SEMRUSH_API_KEY=your_api_key_here
 ```
 
@@ -31,7 +31,7 @@ semrush backlinks semrush.com        # Backlink analysis
   "mcpServers": {
     "semrush-mcp": {
       "command": "npx",
-      "args": ["-y", "github:mzkrasner/semrush-mcp"],
+      "args": ["-y", "github:mrkooblu/semrush-mcp"],
       "env": {
         "SEMRUSH_API_KEY": "your-api-key"
       }
@@ -62,13 +62,13 @@ All capabilities are available through both the MCP server (77 tools) and the CL
 ### Install globally from GitHub
 
 ```bash
-npm install -g github:mzkrasner/semrush-mcp
+npm install -g github:mrkooblu/semrush-mcp
 ```
 
 ### Or clone and link locally
 
 ```bash
-git clone https://github.com/mzkrasner/semrush-mcp.git
+git clone https://github.com/mrkooblu/semrush-mcp.git
 cd semrush-mcp
 npm install && npm run build && npm link
 ```
@@ -90,7 +90,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
   "mcpServers": {
     "semrush-mcp": {
       "command": "npx",
-      "args": ["-y", "github:mzkrasner/semrush-mcp"],
+      "args": ["-y", "github:mrkooblu/semrush-mcp"],
       "env": {
         "SEMRUSH_API_KEY": "your-api-key"
       }
@@ -344,7 +344,7 @@ Check your balance anytime with `semrush units` or the `semrush_api_units_balanc
 ## Development
 
 ```bash
-git clone https://github.com/mzkrasner/semrush-mcp.git
+git clone https://github.com/mrkooblu/semrush-mcp.git
 cd semrush-mcp
 npm install
 cp .env.example .env   # add your SEMRUSH_API_KEY
