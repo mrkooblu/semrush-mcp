@@ -10,24 +10,79 @@ import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vite
 import { SemrushApiClient, SemrushApiError } from '../semrush-api.js'
 import {
   MOCK_API_UNITS_BALANCE,
+  MOCK_BACKLINKS_ANCHORS_CSV,
+  MOCK_BACKLINKS_CATEGORIES_CSV,
   MOCK_BACKLINKS_CSV,
   MOCK_BACKLINKS_DOMAINS_CSV,
+  MOCK_BACKLINKS_OVERVIEW_CSV,
+  MOCK_BACKLINKS_PAGES_CSV,
+  MOCK_BACKLINKS_TLD_CSV,
   MOCK_BATCH_KEYWORD_CSV,
   MOCK_BROAD_MATCH_CSV,
   MOCK_COMPETITORS_CSV,
+  MOCK_DOMAIN_ADS_HISTORY_CSV,
+  MOCK_DOMAIN_ADWORDS_UNIQUE_CSV,
   MOCK_DOMAIN_ORGANIC_KEYWORDS_CSV,
+  MOCK_DOMAIN_ORGANIC_UNIQUE_CSV,
   MOCK_DOMAIN_OVERVIEW_CSV,
   MOCK_DOMAIN_PAID_KEYWORDS_CSV,
+  MOCK_DOMAIN_RANK_CSV,
+  MOCK_DOMAIN_RANK_HISTORY_CSV,
+  MOCK_DOMAIN_SHOPPING_CSV,
+  MOCK_DOMAIN_SHOPPING_UNIQUE_CSV,
   MOCK_KEYWORD_ADS_HISTORY_CSV,
   MOCK_KEYWORD_DIFFICULTY_CSV,
   MOCK_KEYWORD_ORGANIC_RESULTS_CSV,
   MOCK_KEYWORD_OVERVIEW_CSV,
   MOCK_KEYWORD_PAID_RESULTS_CSV,
   MOCK_KEYWORD_SINGLE_DB_CSV,
+  MOCK_PAID_COMPETITORS_CSV,
   MOCK_PHRASE_QUESTIONS_CSV,
+  MOCK_PROJECTS_LIST_JSON,
+  MOCK_PROJECT_JSON,
+  MOCK_RANK_DIFFERENCE_CSV,
   MOCK_RELATED_KEYWORDS_CSV,
+  MOCK_SITE_AUDIT_HISTORY_JSON,
+  MOCK_SITE_AUDIT_INFO_JSON,
+  MOCK_SITE_AUDIT_ISSUES_JSON,
+  MOCK_SITE_AUDIT_LAUNCH_JSON,
+  MOCK_SITE_AUDIT_PAGES_JSON,
+  MOCK_SITE_AUDIT_PAGE_DETAIL_JSON,
+  MOCK_SITE_AUDIT_SNAPSHOTS_JSON,
+  MOCK_SITE_AUDIT_SNAPSHOT_DETAIL_JSON,
+  MOCK_SUBDOMAIN_ORGANIC_CSV,
+  MOCK_SUBDOMAIN_RANKS_CSV,
+  MOCK_SUBDOMAIN_RANK_CSV,
+  MOCK_SUBDOMAIN_RANK_HISTORY_CSV,
+  MOCK_SUBFOLDER_ADWORDS_CSV,
+  MOCK_SUBFOLDER_ADWORDS_UNIQUE_CSV,
+  MOCK_SUBFOLDER_ORGANIC_CSV,
+  MOCK_SUBFOLDER_ORGANIC_UNIQUE_CSV,
+  MOCK_SUBFOLDER_RANKS_CSV,
+  MOCK_SUBFOLDER_RANK_CSV,
+  MOCK_SUBFOLDER_RANK_HISTORY_CSV,
   MOCK_TRAFFIC_SOURCES_JSON,
   MOCK_TRAFFIC_SUMMARY_JSON,
+  MOCK_TRENDS_ACCURACY_CSV,
+  MOCK_TRENDS_AUDIENCE_INSIGHTS_CSV,
+  MOCK_TRENDS_AUDIENCE_INTERESTS_CSV,
+  MOCK_TRENDS_DESTINATIONS_CSV,
+  MOCK_TRENDS_EDUCATION_CSV,
+  MOCK_TRENDS_GEO_CSV,
+  MOCK_TRENDS_HOUSEHOLD_CSV,
+  MOCK_TRENDS_INCOME_CSV,
+  MOCK_TRENDS_OCCUPATION_CSV,
+  MOCK_TRENDS_PURCHASE_CONVERSION_CSV,
+  MOCK_TRENDS_RANK_CSV,
+  MOCK_TRENDS_SOCIAL_MEDIA_CSV,
+  MOCK_TRENDS_SUBDOMAINS_CSV,
+  MOCK_TRENDS_SUBFOLDERS_CSV,
+  MOCK_TRENDS_TOPPAGES_CSV,
+  MOCK_URL_ADWORDS_CSV,
+  MOCK_URL_ORGANIC_CSV,
+  MOCK_URL_RANKS_CSV,
+  MOCK_URL_RANK_CSV,
+  MOCK_URL_RANK_HISTORY_CSV,
   assertHasData,
   assertValidResponse,
   createMockAxiosResponse,
@@ -42,7 +97,6 @@ vi.mock('axios', async (importOriginal) => {
     ...actual,
     default: Object.assign(mockFn, {
       ...actual.default,
-      // Keep the AxiosError class reference intact
     }),
   }
 })
@@ -122,8 +176,7 @@ describe('SemrushApiClient — Unit Tests', () => {
   })
 
   // ==========================================================================
-  // API Method Response Shapes (all 19 methods)
-  // Each test uses a unique domain/keyword param to avoid cache collisions
+  // API Method Response Shapes — Original 19 methods
   // ==========================================================================
 
   describe('API Methods — Response Shapes', () => {
@@ -282,6 +335,616 @@ describe('SemrushApiClient — Unit Tests', () => {
       assertValidResponse(result)
       assertHasData(result)
       expect(result.data).toBe('45230')
+    })
+  })
+
+  // ==========================================================================
+  // New API Methods — Overview Reports
+  // ==========================================================================
+
+  describe('New Methods — Overview Reports', () => {
+    function mockSuccess(data: string) {
+      mockedAxios.mockResolvedValueOnce(createMockAxiosResponse(data))
+    }
+
+    it('getDomainRank returns expected shape', async () => {
+      mockSuccess(MOCK_DOMAIN_RANK_CSV)
+      const result = await client.getDomainRank(`dr-${callId}.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('example.com')
+    })
+
+    it('getDomainRankHistory returns expected shape', async () => {
+      mockSuccess(MOCK_DOMAIN_RANK_HISTORY_CSV)
+      const result = await client.getDomainRankHistory(`drh-${callId}.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Date')
+    })
+
+    it('getRankDifference returns expected shape', async () => {
+      mockSuccess(MOCK_RANK_DIFFERENCE_CSV)
+      const result = await client.getRankDifference('us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('rising.com')
+    })
+  })
+
+  // ==========================================================================
+  // New API Methods — Domain Reports
+  // ==========================================================================
+
+  describe('New Methods — Domain Reports', () => {
+    function mockSuccess(data: string) {
+      mockedAxios.mockResolvedValueOnce(createMockAxiosResponse(data))
+    }
+
+    it('getPaidCompetitors returns expected shape', async () => {
+      mockSuccess(MOCK_PAID_COMPETITORS_CSV)
+      const result = await client.getPaidCompetitors(`pc-${callId}.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('competitor1.com')
+    })
+
+    it('getDomainAdsHistory returns expected shape', async () => {
+      mockSuccess(MOCK_DOMAIN_ADS_HISTORY_CSV)
+      const result = await client.getDomainAdsHistory(`dah-${callId}.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('buy seo tools')
+    })
+
+    it('getDomainOrganicUnique returns expected shape', async () => {
+      mockSuccess(MOCK_DOMAIN_ORGANIC_UNIQUE_CSV)
+      const result = await client.getDomainOrganicUnique(`dou-${callId}.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Number of Keywords')
+    })
+
+    it('getDomainAdwordsUnique returns expected shape', async () => {
+      mockSuccess(MOCK_DOMAIN_ADWORDS_UNIQUE_CSV)
+      const result = await client.getDomainAdwordsUnique(`dau-${callId}.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Ad id')
+    })
+
+    it('getDomainShopping returns expected shape', async () => {
+      mockSuccess(MOCK_DOMAIN_SHOPPING_CSV)
+      const result = await client.getDomainShopping(`ds-${callId}.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Shop Name')
+    })
+
+    it('getDomainShoppingUnique returns expected shape', async () => {
+      mockSuccess(MOCK_DOMAIN_SHOPPING_UNIQUE_CSV)
+      const result = await client.getDomainShoppingUnique(`dsu-${callId}.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Product Price')
+    })
+  })
+
+  // ==========================================================================
+  // New API Methods — URL Reports
+  // ==========================================================================
+
+  describe('New Methods — URL Reports', () => {
+    function mockSuccess(data: string) {
+      mockedAxios.mockResolvedValueOnce(createMockAxiosResponse(data))
+    }
+
+    it('getUrlOrganic returns expected shape', async () => {
+      mockSuccess(MOCK_URL_ORGANIC_CSV)
+      const result = await client.getUrlOrganic(`https://url-${callId}.com/page`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('what is seo')
+    })
+
+    it('getUrlAdwords returns expected shape', async () => {
+      mockSuccess(MOCK_URL_ADWORDS_CSV)
+      const result = await client.getUrlAdwords(`https://url-${callId}.com/page`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('seo tools')
+    })
+
+    it('getUrlRank returns expected shape', async () => {
+      mockSuccess(MOCK_URL_RANK_CSV)
+      const result = await client.getUrlRank(`https://url-${callId}.com/page`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Organic Keywords')
+    })
+
+    it('getUrlRankHistory returns expected shape', async () => {
+      mockSuccess(MOCK_URL_RANK_HISTORY_CSV)
+      const result = await client.getUrlRankHistory(`https://url-${callId}.com/page`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Date')
+    })
+
+    it('getUrlRanks returns expected shape', async () => {
+      mockSuccess(MOCK_URL_RANKS_CSV)
+      const result = await client.getUrlRanks(`https://url-${callId}.com/page`, 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Database')
+    })
+
+    it('getUrlOrganic passes url param correctly', async () => {
+      mockSuccess(MOCK_URL_ORGANIC_CSV)
+      await client.getUrlOrganic('https://example.com/page', 'us', 10)
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.params.url).toBe('https://example.com/page')
+      expect(callArgs.params.type).toBe('url_organic')
+    })
+  })
+
+  // ==========================================================================
+  // New API Methods — Subdomain Reports
+  // ==========================================================================
+
+  describe('New Methods — Subdomain Reports', () => {
+    function mockSuccess(data: string) {
+      mockedAxios.mockResolvedValueOnce(createMockAxiosResponse(data))
+    }
+
+    it('getSubdomainRank returns expected shape', async () => {
+      mockSuccess(MOCK_SUBDOMAIN_RANK_CSV)
+      const result = await client.getSubdomainRank(`sub-${callId}.example.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Organic Keywords')
+    })
+
+    it('getSubdomainRanks returns expected shape', async () => {
+      mockSuccess(MOCK_SUBDOMAIN_RANKS_CSV)
+      const result = await client.getSubdomainRanks(`sub-${callId}.example.com`, 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Database')
+    })
+
+    it('getSubdomainRankHistory returns expected shape', async () => {
+      mockSuccess(MOCK_SUBDOMAIN_RANK_HISTORY_CSV)
+      const result = await client.getSubdomainRankHistory(`sub-${callId}.example.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Date')
+    })
+
+    it('getSubdomainOrganic returns expected shape', async () => {
+      mockSuccess(MOCK_SUBDOMAIN_ORGANIC_CSV)
+      const result = await client.getSubdomainOrganic(`sub-${callId}.example.com`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('subdomain keyword')
+    })
+
+    it('getSubdomainRank passes subdomain param correctly', async () => {
+      mockSuccess(MOCK_SUBDOMAIN_RANK_CSV)
+      await client.getSubdomainRank('www.example.com', 'us', 5)
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.params.subdomain).toBe('www.example.com')
+      expect(callArgs.params.type).toBe('subdomain_rank')
+    })
+  })
+
+  // ==========================================================================
+  // New API Methods — Subfolder Reports
+  // ==========================================================================
+
+  describe('New Methods — Subfolder Reports', () => {
+    function mockSuccess(data: string) {
+      mockedAxios.mockResolvedValueOnce(createMockAxiosResponse(data))
+    }
+
+    it('getSubfolderOrganic returns expected shape', async () => {
+      mockSuccess(MOCK_SUBFOLDER_ORGANIC_CSV)
+      const result = await client.getSubfolderOrganic(`example-${callId}.com/blog/`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('subfolder keyword')
+    })
+
+    it('getSubfolderAdwords returns expected shape', async () => {
+      mockSuccess(MOCK_SUBFOLDER_ADWORDS_CSV)
+      const result = await client.getSubfolderAdwords(`example-${callId}.com/blog/`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('subfolder paid')
+    })
+
+    it('getSubfolderRank returns expected shape', async () => {
+      mockSuccess(MOCK_SUBFOLDER_RANK_CSV)
+      const result = await client.getSubfolderRank(`example-${callId}.com/blog/`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Organic Keywords')
+    })
+
+    it('getSubfolderRanks returns expected shape', async () => {
+      mockSuccess(MOCK_SUBFOLDER_RANKS_CSV)
+      const result = await client.getSubfolderRanks(`example-${callId}.com/blog/`, 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Database')
+    })
+
+    it('getSubfolderRankHistory returns expected shape', async () => {
+      mockSuccess(MOCK_SUBFOLDER_RANK_HISTORY_CSV)
+      const result = await client.getSubfolderRankHistory(`example-${callId}.com/blog/`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Date')
+    })
+
+    it('getSubfolderOrganicUnique returns expected shape', async () => {
+      mockSuccess(MOCK_SUBFOLDER_ORGANIC_UNIQUE_CSV)
+      const result = await client.getSubfolderOrganicUnique(`example-${callId}.com/blog/`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Number of Keywords')
+    })
+
+    it('getSubfolderAdwordsUnique returns expected shape', async () => {
+      mockSuccess(MOCK_SUBFOLDER_ADWORDS_UNIQUE_CSV)
+      const result = await client.getSubfolderAdwordsUnique(`example-${callId}.com/blog/`, 'us', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Ad id')
+    })
+
+    it('getSubfolderOrganic passes subfolder param correctly', async () => {
+      mockSuccess(MOCK_SUBFOLDER_ORGANIC_CSV)
+      await client.getSubfolderOrganic('example.com/blog/', 'us', 5)
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.params.subfolder).toBe('example.com/blog/')
+      expect(callArgs.params.type).toBe('subfolder_organic')
+    })
+  })
+
+  // ==========================================================================
+  // New API Methods — Backlinks Reports
+  // ==========================================================================
+
+  describe('New Methods — Backlinks Reports', () => {
+    function mockSuccess(data: string) {
+      mockedAxios.mockResolvedValueOnce(createMockAxiosResponse(data))
+    }
+
+    it('getBacklinksOverview returns expected shape', async () => {
+      mockSuccess(MOCK_BACKLINKS_OVERVIEW_CSV)
+      const result = await client.getBacklinksOverview(`blo-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('total')
+    })
+
+    it('getBacklinksPages returns expected shape', async () => {
+      mockSuccess(MOCK_BACKLINKS_PAGES_CSV)
+      const result = await client.getBacklinksPages(`blp-${callId}.com`, 'root_domain', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('source_url')
+    })
+
+    it('getBacklinksAnchors returns expected shape', async () => {
+      mockSuccess(MOCK_BACKLINKS_ANCHORS_CSV)
+      const result = await client.getBacklinksAnchors(`bla-${callId}.com`, 'root_domain', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('click here')
+    })
+
+    it('getBacklinksTld returns expected shape', async () => {
+      mockSuccess(MOCK_BACKLINKS_TLD_CSV)
+      const result = await client.getBacklinksTld(`blt-${callId}.com`, 'root_domain', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('com')
+    })
+
+    it('getBacklinksCategories returns expected shape', async () => {
+      mockSuccess(MOCK_BACKLINKS_CATEGORIES_CSV)
+      const result = await client.getBacklinksCategories(`blc-${callId}.com`, 'root_domain', 5)
+      assertValidResponse(result)
+      assertHasData(result)
+      expect(result.data).toContain('Internet and Telecom')
+    })
+
+    it('getBacklinksOverview uses correct base URL', async () => {
+      mockSuccess(MOCK_BACKLINKS_OVERVIEW_CSV)
+      await client.getBacklinksOverview('example.com')
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.url).toBe('https://api.semrush.com/analytics/v1/')
+      expect(callArgs.params.type).toBe('backlinks_overview')
+    })
+  })
+
+  // ==========================================================================
+  // New API Methods — Trends
+  // ==========================================================================
+
+  describe('New Methods — Trends API', () => {
+    function mockSuccess(data: string) {
+      mockedAxios.mockResolvedValueOnce(createMockAxiosResponse(data))
+    }
+
+    it('getTrafficDestinations returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_DESTINATIONS_CSV)
+      const result = await client.getTrafficDestinations(`td-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getTrafficGeo returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_GEO_CSV)
+      const result = await client.getTrafficGeo(`tg-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getTrafficSubdomains returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_SUBDOMAINS_CSV)
+      const result = await client.getTrafficSubdomains(`tsub-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getTrafficSubfolders returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_SUBFOLDERS_CSV)
+      const result = await client.getTrafficSubfolders(`tsfold-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getTrafficTopPages returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_TOPPAGES_CSV)
+      const result = await client.getTrafficTopPages(`ttp-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getTrafficRank returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_RANK_CSV)
+      const result = await client.getTrafficRank(`tr-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getTrafficSocialMedia returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_SOCIAL_MEDIA_CSV)
+      const result = await client.getTrafficSocialMedia(`tsm-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getAudienceInsights returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_AUDIENCE_INSIGHTS_CSV)
+      const result = await client.getAudienceInsights([`ai-${callId}.com`], [`ai-${callId}.com`])
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getPurchaseConversion returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_PURCHASE_CONVERSION_CSV)
+      const result = await client.getPurchaseConversion(`pc-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getHouseholdDistribution returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_HOUSEHOLD_CSV)
+      const result = await client.getHouseholdDistribution(`hh-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getIncomeDistribution returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_INCOME_CSV)
+      const result = await client.getIncomeDistribution(`inc-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getEducationDistribution returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_EDUCATION_CSV)
+      const result = await client.getEducationDistribution(`edu-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getOccupationDistribution returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_OCCUPATION_CSV)
+      const result = await client.getOccupationDistribution(`occ-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getAudienceInterests returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_AUDIENCE_INTERESTS_CSV)
+      const result = await client.getAudienceInterests(`aint-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getTrafficAccuracy returns expected shape', async () => {
+      mockSuccess(MOCK_TRENDS_ACCURACY_CSV)
+      const result = await client.getTrafficAccuracy(`acc-${callId}.com`)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getTrafficDestinations uses correct Trends API base URL', async () => {
+      mockSuccess(MOCK_TRENDS_DESTINATIONS_CSV)
+      await client.getTrafficDestinations('example.com')
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.url).toContain('analytics/ta/api/v3/destinations')
+    })
+
+    it('getTrafficSummary uses targets param', async () => {
+      mockSuccess(MOCK_TRAFFIC_SUMMARY_JSON)
+      await client.getTrafficSummary(['a.com', 'b.com'], 'us')
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.params.targets).toBe('a.com,b.com')
+    })
+
+    it('getAudienceInsights passes targets and selected_targets', async () => {
+      mockSuccess(MOCK_TRENDS_AUDIENCE_INSIGHTS_CSV)
+      await client.getAudienceInsights(['a.com', 'b.com'], ['a.com'])
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.params.targets).toBe('a.com,b.com')
+      expect(callArgs.params.selected_targets).toBe('a.com')
+    })
+  })
+
+  // ==========================================================================
+  // New API Methods — Projects
+  // ==========================================================================
+
+  describe('New Methods — Projects API', () => {
+    function mockSuccess(data: string) {
+      mockedAxios.mockResolvedValueOnce(createMockAxiosResponse(data))
+    }
+
+    it('listProjects returns expected shape and uses correct URL', async () => {
+      mockSuccess(MOCK_PROJECTS_LIST_JSON)
+      const result = await client.listProjects()
+      assertValidResponse(result)
+      assertHasData(result)
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.url).toBe('https://api.semrush.com/management/v1/projects')
+    })
+
+    it('getProject returns expected shape', async () => {
+      mockSuccess(MOCK_PROJECT_JSON)
+      const result = await client.getProject(12345)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('createProject returns expected shape', async () => {
+      mockSuccess(MOCK_PROJECT_JSON)
+      const result = await client.createProject('https://example.com', 'Test')
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('updateProject returns expected shape', async () => {
+      mockSuccess(MOCK_PROJECT_JSON)
+      const result = await client.updateProject(12345, 'New Name')
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('deleteProject returns expected shape', async () => {
+      mockSuccess('{"status":"ok"}')
+      const result = await client.deleteProject(12345)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('createProject uses POST method', async () => {
+      mockSuccess(MOCK_PROJECT_JSON)
+      await client.createProject('https://example.com')
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.method).toBe('post')
+    })
+
+    it('deleteProject uses DELETE method', async () => {
+      mockSuccess('{"status":"ok"}')
+      await client.deleteProject(99999)
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.method).toBe('delete')
+    })
+  })
+
+  // ==========================================================================
+  // New API Methods — Site Audit
+  // ==========================================================================
+
+  describe('New Methods — Site Audit API', () => {
+    function mockSuccess(data: string) {
+      mockedAxios.mockResolvedValueOnce(createMockAxiosResponse(data))
+    }
+
+    it('getSiteAuditInfo returns expected shape', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_INFO_JSON)
+      const result = await client.getSiteAuditInfo(12345)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getSiteAuditSnapshots returns expected shape', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_SNAPSHOTS_JSON)
+      const result = await client.getSiteAuditSnapshots(12345)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getSiteAuditSnapshotDetail returns expected shape', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_SNAPSHOT_DETAIL_JSON)
+      const result = await client.getSiteAuditSnapshotDetail(12345, 100)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getSiteAuditIssues returns expected shape', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_ISSUES_JSON)
+      const result = await client.getSiteAuditIssues(12345)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getSiteAuditPages returns expected shape', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_PAGES_JSON)
+      const result = await client.getSiteAuditPages(12345, 'https://example.com')
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getSiteAuditPageDetail returns expected shape', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_PAGE_DETAIL_JSON)
+      const result = await client.getSiteAuditPageDetail(12345, 1)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getSiteAuditHistory returns expected shape', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_HISTORY_JSON)
+      const result = await client.getSiteAuditHistory(12345, 10, 0)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('launchSiteAuditCrawl returns expected shape', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_LAUNCH_JSON)
+      const result = await client.launchSiteAuditCrawl(12345)
+      assertValidResponse(result)
+      assertHasData(result)
+    })
+
+    it('getSiteAuditInfo uses correct URL', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_INFO_JSON)
+      await client.getSiteAuditInfo(99901)
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.url).toContain('/reports/v1/projects/99901/siteaudit/info')
+    })
+
+    it('launchSiteAuditCrawl uses POST method', async () => {
+      mockSuccess(MOCK_SITE_AUDIT_LAUNCH_JSON)
+      await client.launchSiteAuditCrawl(99902)
+      const callArgs = mockedAxios.mock.calls[0][0]
+      expect(callArgs.method).toBe('post')
     })
   })
 
@@ -554,7 +1217,7 @@ describe('SemrushApiClient — Unit Tests', () => {
       await client.getTrafficSummary([`ts1-${callId}.com`, `ts2-${callId}.com`], 'us')
 
       const callArgs = mockedAxios.mock.calls[0][0]
-      expect(callArgs.params.domains).toBe(`ts1-${callId}.com,ts2-${callId}.com`)
+      expect(callArgs.params.targets).toBe(`ts1-${callId}.com,ts2-${callId}.com`)
     })
 
     it('uses correct API URL for traffic endpoints', async () => {
@@ -563,7 +1226,7 @@ describe('SemrushApiClient — Unit Tests', () => {
       await client.getTrafficSummary([`tsurl-${callId}.com`])
 
       const callArgs = mockedAxios.mock.calls[0][0]
-      expect(callArgs.url).toContain('analytics/ta/v3/summary')
+      expect(callArgs.url).toContain('analytics/ta/api/v3/summary')
     })
 
     it('uses correct API URL for standard endpoints', async () => {
