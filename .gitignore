@@ -2,7 +2,7 @@
 node_modules/
 
 # Compiled output
-dist/
+dist/__tests__/
 build/
 
 # Environment files

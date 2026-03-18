@@ -609,7 +609,9 @@ describe('MCP Server — stdio Integration', () => {
         const parsed = JSON.parse(text)
         if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].project_id) {
           discoveredProjectId = parsed[0].project_id as number
-          console.log(`[PASS] semrush_list_projects: found ${parsed.length} projects, using ID ${discoveredProjectId}`)
+          console.log(
+            `[PASS] semrush_list_projects: found ${parsed.length} projects, using ID ${discoveredProjectId}`
+          )
         } else {
           console.log(`[PASS] semrush_list_projects: ${text.substring(0, 80)}...`)
         }
@@ -626,7 +628,9 @@ describe('MCP Server — stdio Integration', () => {
 
       const text = await callTool('semrush_get_project', { project_id: discoveredProjectId })
       expect(text.length).toBeGreaterThan(0)
-      console.log(`[PASS] semrush_get_project (id=${discoveredProjectId}): ${text.substring(0, 80)}...`)
+      console.log(
+        `[PASS] semrush_get_project (id=${discoveredProjectId}): ${text.substring(0, 80)}...`
+      )
     })
 
     // Skip write operations to avoid side effects
@@ -646,9 +650,13 @@ describe('MCP Server — stdio Integration', () => {
         return
       }
 
-      const text = await callTool('semrush_site_audit_info', {
-        project_id: discoveredProjectId,
-      }, { allowError: true })
+      const text = await callTool(
+        'semrush_site_audit_info',
+        {
+          project_id: discoveredProjectId,
+        },
+        { allowError: true }
+      )
       expect(text.length).toBeGreaterThan(0)
       console.log(`[PASS] semrush_site_audit_info: ${text.substring(0, 80)}...`)
     })
@@ -659,9 +667,13 @@ describe('MCP Server — stdio Integration', () => {
         return
       }
 
-      const text = await callTool('semrush_site_audit_snapshots', {
-        project_id: discoveredProjectId,
-      }, { allowError: true })
+      const text = await callTool(
+        'semrush_site_audit_snapshots',
+        {
+          project_id: discoveredProjectId,
+        },
+        { allowError: true }
+      )
       expect(text.length).toBeGreaterThan(0)
       console.log(`[PASS] semrush_site_audit_snapshots: ${text.substring(0, 80)}...`)
     })
@@ -672,9 +684,13 @@ describe('MCP Server — stdio Integration', () => {
         return
       }
 
-      const text = await callTool('semrush_site_audit_issues', {
-        project_id: discoveredProjectId,
-      }, { allowError: true })
+      const text = await callTool(
+        'semrush_site_audit_issues',
+        {
+          project_id: discoveredProjectId,
+        },
+        { allowError: true }
+      )
       expect(text.length).toBeGreaterThan(0)
       console.log(`[PASS] semrush_site_audit_issues: ${text.substring(0, 80)}...`)
     })
@@ -685,10 +701,14 @@ describe('MCP Server — stdio Integration', () => {
         return
       }
 
-      const text = await callTool('semrush_site_audit_history', {
-        project_id: discoveredProjectId,
-        limit: 3,
-      }, { allowError: true })
+      const text = await callTool(
+        'semrush_site_audit_history',
+        {
+          project_id: discoveredProjectId,
+          limit: 3,
+        },
+        { allowError: true }
+      )
       expect(text.length).toBeGreaterThan(0)
       console.log(`[PASS] semrush_site_audit_history: ${text.substring(0, 80)}...`)
     })
@@ -730,7 +750,9 @@ describe('MCP Server — stdio Integration', () => {
       const hasError = response.error !== undefined
       const hasResultError =
         response.result?.isError === true ||
-        response.result?.content?.some((c: { text?: string }) => c.text?.toLowerCase().includes('error'))
+        response.result?.content?.some((c: { text?: string }) =>
+          c.text?.toLowerCase().includes('error')
+        )
       expect(hasError || hasResultError).toBe(true)
     })
 
