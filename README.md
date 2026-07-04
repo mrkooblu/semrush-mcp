@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/mrkooblu-semrush-mcp-badge.png)](https://mseep.ai/app/mrkooblu-semrush-mcp)
+
 # Semrush MCP
 
 MCP Server & CLI for keyword research, domain analytics, backlinks, traffic analysis, and competitive intelligence.
