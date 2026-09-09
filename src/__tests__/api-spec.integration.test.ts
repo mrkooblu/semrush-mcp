@@ -8,6 +8,8 @@
  * If a column is missing or unexpected columns appear, the test FAILS —
  * this means the upstream API changed and the spec needs updating.
  */
+import 'dotenv/config'
+
 import axios from 'axios'
 import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
